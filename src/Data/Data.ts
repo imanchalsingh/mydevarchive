@@ -341,7 +341,6 @@ export const badges = [
     issuer: "Skillsoft",
     category: "Frontend",
     color: "#9b59b6",
-    date: "2024",
     image: skillsoftWebDevBadge,
   },
   {
@@ -350,7 +349,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#1abc9c",
-    date: "2024",
     image: copilotChat,
   },
   {
@@ -359,7 +357,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Development",
     color: "#3498db",
-    date: "2024",
     image: automateDevTasks,
   },
   {
@@ -368,7 +365,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Development",
     color: "#9b59b6",
-    date: "2024",
     image: githubCodespaces,
   },
   {
@@ -377,7 +373,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#e74c3c",
-    date: "2024",
     image: equipLearnersAi,
   },
   {
@@ -386,7 +381,6 @@ export const badges = [
     issuer: "CodeChef",
     category: "Competitive",
     color: "#1abc9c",
-    date: "2024",
     image: codechefBadge1,
   },
   {
@@ -395,7 +389,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#f39c12",
-    date: "2024",
     image: githubCopilotJS,
   },
   {
@@ -404,7 +397,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#2ecc71",
-    date: "2024",
     image: introGithubCopilot,
   },
   {
@@ -413,7 +405,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Cloud",
     color: "#2980b9",
-    date: "2024",
     image: introAzureCloudShell,
   },
   {
@@ -422,7 +413,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Development",
     color: "#8e44ad",
-    date: "2024",
     image: introGithub,
   },
   {
@@ -431,7 +421,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#d35400",
-    date: "2024",
     image: introPromptEng,
   },
   {
@@ -440,7 +429,6 @@ export const badges = [
     issuer: "CodeChef",
     category: "Competitive",
     color: "#3498db",
-    date: "2024",
     image: codechefBadge2,
   },
   {
@@ -449,7 +437,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Full Stack",
     color: "#16a085",
-    date: "2024",
     image: meanStackAzure,
   },
   {
@@ -458,7 +445,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#c0392b",
-    date: "2024",
     image: responsibleAi,
   },
   {
@@ -467,7 +453,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "AI",
     color: "#27ae60",
-    date: "2024",
     image: advancedGithubCopilot,
   },
   {
@@ -476,7 +461,6 @@ export const badges = [
     issuer: "Postman",
     category: "API",
     color: "#e74c3c",
-    date: "2025",
     image: postmanBadge,
   },
   {
@@ -485,7 +469,6 @@ export const badges = [
     issuer: "Microsoft",
     category: "Frontend",
     color: "#7f8c8d",
-    date: "2024",
     image: webDevBadge,
   },
 ];
@@ -498,7 +481,6 @@ export const contributionBadges = [
     event: "ECWoC",
     type: "Participant",
     color: "#1abc9c",
-    year: "2026",
     role: "Contributor",
     image: ecwoc2026Badge,
   },
@@ -508,7 +490,6 @@ export const contributionBadges = [
     event: "ECWoC",
     type: "Contributor",
     color: "#3498db",
-    year: "2026",
     role: "Open Source",
     image: ecwocContributorBadge,
   },
@@ -518,7 +499,6 @@ export const contributionBadges = [
     event: "WOCS",
     type: "Recognition",
     color: "#9b59b6",
-    year: "2025",
     image: wocsBadge,
   },
   {
@@ -536,7 +516,6 @@ export const contributionBadges = [
     event: "OSC Global",
     type: "Networking",
     color: "#f39c12",
-    year: "2025",
     image: oscGlobalBadge,
   },
   {
@@ -545,7 +524,6 @@ export const contributionBadges = [
     event: "SWOC",
     type: "Ticket",
     color: "#8e44ad",
-    year: "2025",
     image: swocTicketBadge,
   },
 ];
@@ -558,7 +536,6 @@ export const contributionCertificates = [
     event: "WoCS (Women in Code School)",
     type: "Contribution",
     color: "#9b59b6",
-    year: "2025",
     role: "Contributor",
     issuer: "WoCS",
     image: wocs2025Certificate,
@@ -634,7 +611,7 @@ export const offerLetters = [
     color: "#8e44ad",
     duration: "1 Month",
     mode: "Remote",
-    status: "completed",
+    status: "present",
     image: prodigyOffer,
   },
   {
@@ -644,7 +621,7 @@ export const offerLetters = [
     color: "#2c3e50",
     duration: "1 Month",
     mode: "Remote",
-    status: "completed",
+    status: "present",
     image: skillcraftOffer,
   },
 ];

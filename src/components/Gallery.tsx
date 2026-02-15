@@ -36,7 +36,7 @@ import {
   contributionBadges,
   contributionCertificates,
   offerLetters,
-} from "../Data/Data.js";
+} from "../Data/Data.ts";
 
 interface StatCard {
   title: string;

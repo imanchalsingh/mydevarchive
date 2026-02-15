@@ -344,13 +344,13 @@ const OfferLetters: React.FC = () => {
               respective internship period.
             </p>
             <div className="flex gap-2 mt-2 flex-wrap">
-              <span className="text-xs px-2 py-0.5 bg-[#1abc9c] bg-opacity-10 text-[#1abc9c] rounded-full">
+              <span className="text-xs px-2 py-0.5 bg-[#1abc9c] bg-opacity-10 text-white rounded-full">
                 💻 Code Available
               </span>
-              <span className="text-xs px-2 py-0.5 bg-[#3498db] bg-opacity-10 text-[#3498db] rounded-full">
+              <span className="text-xs px-2 py-0.5 bg-[#3498db] bg-opacity-10 text-white rounded-full">
                 📁 Public Repos
               </span>
-              <span className="text-xs px-2 py-0.5 bg-[#e74c3c] bg-opacity-10 text-[#e74c3c] rounded-full">
+              <span className="text-xs px-2 py-0.5 bg-[#e74c3c] bg-opacity-10 text-white rounded-full">
                 ✅ Verified Work
               </span>
             </div>

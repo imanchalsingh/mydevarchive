@@ -61,7 +61,6 @@ type DataItem = {
   status?: string;
   image: string;
   color?: string;
-  date?: string;
   [key: string]: any;
 };
 
@@ -159,13 +158,6 @@ const Modal = ({ item, onClose }: { item: DataItem; onClose: () => void }) => (
               <div className="flex items-center gap-3 text-gray-300">
                 <Globe className="w-5 h-5 text-[#9b59b6]" />
                 <span>{item.mode}</span>
-              </div>
-            )}
-
-            {item.date && (
-              <div className="flex items-center gap-3 text-gray-300">
-                <Calendar className="w-5 h-5 text-[#f1c40f]" />
-                <span>{item.date}</span>
               </div>
             )}
 

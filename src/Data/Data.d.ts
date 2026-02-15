@@ -1,5 +1,4 @@
-// src/Data/Data.d.ts
-declare module "../Data/Data.js" {
+declare module "../Data/Data" {
   export interface DataItem {
     id: number;
     name: string;

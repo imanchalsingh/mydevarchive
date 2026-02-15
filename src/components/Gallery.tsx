@@ -1,4 +1,3 @@
-// Gallery.tsx
 import React, { useState, useMemo } from "react";
 import {
   BarChart,
@@ -29,6 +28,7 @@ import {
   TrendingUp,
   PieChart as PieChartIcon,
   BarChart as BarChartIcon,
+  Info,
 } from "lucide-react";
 import {
   courseCertificates,
@@ -38,8 +38,15 @@ import {
   offerLetters,
 } from "../Data/Data.js";
 
-// Types
-interface Certificate {
+interface StatCard {
+  title: string;
+  value: number;
+  icon: React.ElementType;
+  linear: string;
+}
+
+// Add type for data items
+type DataItem = {
   id: number;
   name: string;
   issuer?: string;
@@ -50,17 +57,13 @@ interface Certificate {
   event?: string;
   year?: string;
   duration?: string;
+  mode?: string;
   status?: string;
   image: string;
   color?: string;
-}
-
-interface StatCard {
-  title: string;
-  value: number;
-  icon: React.ElementType;
-  linear: string;
-}
+  date?: string;
+  [key: string]: any;
+};
 
 const Gallery: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
@@ -76,7 +79,7 @@ const Gallery: React.FC = () => {
     contributions: "",
     offers: "",
   });
-  const [selectedItem, setSelectedItem] = useState<Certificate | null>(null);
+  const [selectedItem, setSelectedItem] = useState<DataItem | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
   const colors = [
@@ -113,25 +116,31 @@ const Gallery: React.FC = () => {
   // Statistics
   const statistics = useMemo(() => {
     const categoryCount: Record<string, number> = {};
-    courseCertificates.forEach((cert) => {
-      categoryCount[cert.category] = (categoryCount[cert.category] || 0) + 1;
+    courseCertificates.forEach((cert: DataItem) => {
+      if (cert.category) {
+        categoryCount[cert.category] = (categoryCount[cert.category] || 0) + 1;
+      }
     });
 
     const issuerCount: Record<string, number> = {};
-    courseCertificates.forEach((cert) => {
-      issuerCount[cert.issuer] = (issuerCount[cert.issuer] || 0) + 1;
+    courseCertificates.forEach((cert: DataItem) => {
+      if (cert.issuer) {
+        issuerCount[cert.issuer] = (issuerCount[cert.issuer] || 0) + 1;
+      }
     });
 
     const yearData: Record<string, number> = {};
-    [...badges, ...contributionBadges].forEach((item) => {
+    [...badges, ...contributionBadges].forEach((item: DataItem) => {
       if (item.year) {
         yearData[item.year] = (yearData[item.year] || 0) + 1;
       }
     });
 
     const companyCount: Record<string, number> = {};
-    offerLetters.forEach((offer) => {
-      companyCount[offer.company] = (companyCount[offer.company] || 0) + 1;
+    offerLetters.forEach((offer: DataItem) => {
+      if (offer.company) {
+        companyCount[offer.company] = (companyCount[offer.company] || 0) + 1;
+      }
     });
 
     return {
@@ -189,31 +198,39 @@ const Gallery: React.FC = () => {
   ];
 
   // Filter functions
-  const getFilteredItems = (items: Certificate[], section: string) => {
+  const getFilteredItems = (items: DataItem[], section: string) => {
     return items.filter((item) => {
-      const matchesSearch = Object.values(item).some((val) =>
-        val
-          ?.toString()
-          .toLowerCase()
-          .includes(searchTerms[section].toLowerCase()),
-      );
+      const searchTerm = searchTerms[section]?.toLowerCase() || "";
+      const matchesSearch = 
+        item.name?.toLowerCase().includes(searchTerm) ||
+        item.issuer?.toLowerCase().includes(searchTerm) ||
+        item.company?.toLowerCase().includes(searchTerm) ||
+        item.category?.toLowerCase().includes(searchTerm) ||
+        item.type?.toLowerCase().includes(searchTerm) ||
+        item.role?.toLowerCase().includes(searchTerm) ||
+        item.event?.toLowerCase().includes(searchTerm);
+      
       const filterValue = filters[section];
-      const matchesFilter =
-        filterValue === "all" ||
+      if (filterValue === "all") return matchesSearch;
+      
+      const matchesFilter = 
         item.category?.toLowerCase() === filterValue.toLowerCase() ||
         item.type?.toLowerCase() === filterValue.toLowerCase() ||
-        item.issuer?.toLowerCase() === filterValue.toLowerCase();
+        item.issuer?.toLowerCase() === filterValue.toLowerCase() ||
+        item.company?.toLowerCase() === filterValue.toLowerCase();
+      
       return matchesSearch && matchesFilter;
     });
   };
 
   // Get unique filter options for a section
-  const getFilterOptions = (items: Certificate[], section: string) => {
+  const getFilterOptions = (items: DataItem[]) => {
     const options = new Set<string>();
     items.forEach((item) => {
       if (item.category) options.add(item.category);
       if (item.type) options.add(item.type);
       if (item.issuer) options.add(item.issuer);
+      if (item.company) options.add(item.company);
     });
     return Array.from(options);
   };
@@ -227,7 +244,7 @@ const Gallery: React.FC = () => {
       const link = document.createElement("a");
       link.href = url;
       link.download = `${fileName.replace(/\s+/g, "_")}.png`;
-      document.body.GalleryendChild(link);
+      document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
@@ -241,7 +258,7 @@ const Gallery: React.FC = () => {
     item,
     onClose,
   }: {
-    item: Certificate;
+    item: DataItem;
     onClose: () => void;
   }) => (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
@@ -314,6 +331,20 @@ const Gallery: React.FC = () => {
                 </div>
               )}
 
+              {item.mode && (
+                <div className="flex items-center gap-3 text-gray-300">
+                  <Globe className="w-5 h-5 text-[#9b59b6]" />
+                  <span>{item.mode}</span>
+                </div>
+              )}
+
+              {item.date && (
+                <div className="flex items-center gap-3 text-gray-300">
+                  <Calendar className="w-5 h-5 text-[#f1c40f]" />
+                  <span>{item.date}</span>
+                </div>
+              )}
+
               {item.status && (
                 <div className="mt-4">
                   <span
@@ -338,11 +369,9 @@ const Gallery: React.FC = () => {
   const GalleryCard = ({
     item,
     index,
-    section,
   }: {
-    item: Certificate;
+    item: DataItem;
     index: number;
-    section: string;
   }) => (
     <div
       className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
@@ -372,7 +401,7 @@ const Gallery: React.FC = () => {
           {item.name}
         </h3>
         <p className="text-sm text-gray-400 mb-3">
-          {item.issuer || item.company || item.event}
+          {item.issuer || item.company || item.event || ""}
         </p>
 
         <div className="flex items-center justify-between">
@@ -429,13 +458,14 @@ const Gallery: React.FC = () => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) =>
-                  `${name} ${(percent * 100).toFixed(0)}%`
-                }
+                label={({ name, percent }) => {
+                  const percentage = percent ? (percent * 100).toFixed(0) : "0";
+                  return `${name} ${percentage}%`;
+                }}
                 outerRadius={80}
                 dataKey="value"
               >
-                {statistics.categoryData.map((entry, index) => (
+                {statistics.categoryData.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={colors[index % colors.length]}
@@ -472,7 +502,7 @@ const Gallery: React.FC = () => {
                 }}
               />
               <Bar dataKey="value">
-                {statistics.issuerData.slice(0, 8).map((entry, index) => (
+                {statistics.issuerData.slice(0, 8).map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={colors[index % colors.length]}
@@ -569,8 +599,7 @@ const Gallery: React.FC = () => {
                         ? badges
                         : activeTab === "contributions"
                           ? [...contributionBadges, ...contributionCertificates]
-                          : offerLetters,
-                    activeTab,
+                          : offerLetters
                   ).map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -594,7 +623,6 @@ const Gallery: React.FC = () => {
                     key={item.id}
                     item={item}
                     index={index}
-                    section="certificates"
                   />
                 ),
               )}
@@ -608,7 +636,6 @@ const Gallery: React.FC = () => {
                   key={item.id}
                   item={item}
                   index={index}
-                  section="badges"
                 />
               ))}
             </div>
@@ -618,102 +645,91 @@ const Gallery: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {getFilteredItems(
                 [...contributionBadges, ...contributionCertificates],
-                "contributions",
+                "contributions"
               ).map((item, index) => (
                 <GalleryCard
                   key={item.id}
                   item={item}
                   index={index}
-                  section="contributions"
                 />
               ))}
             </div>
           )}
 
           {activeTab === "offers" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {getFilteredItems(offerLetters, "offers").map((item, index) => (
-                <div
-                  key={item.id}
-                  className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
-                  onClick={() => setSelectedItem(item)}
-                >
-                  <div className="relative h-48 overflow-hidden bg-linear-to-br from-gray-900 to-black">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {getFilteredItems(offerLetters, "offers").map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
+                    onClick={() => setSelectedItem(item)}
+                  >
+                    <div className="relative h-48 overflow-hidden bg-linear-to-br from-gray-900 to-black">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadImage(item.image, item.name);
-                      }}
-                      className="absolute bottom-2 right-2 p-2 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085] z-10"
-                    >
-                      <Download className="w-4 h-4 text-white" />
-                    </button>
-                  </div>
-
-                  <div className="p-4">
-                    <h3 className="font-semibold text-white mb-1">
-                      {item.company}
-                    </h3>
-                    <p className="text-sm text-gray-400 mb-2">{item.role}</p>
-
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
-                      <Clock className="w-3 h-3" />
-                      <span>{item.duration}</span>
-                      <span className="mx-1">•</span>
-                      <Globe className="w-3 h-3" />
-                      <span>{item.mode}</span>
-                    </div>
-
-                    <div className="mt-3">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          item.status === "completed"
-                            ? "bg-green-500/20 text-green-400"
-                            : "bg-yellow-500/20 text-yellow-400"
-                        }`}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          downloadImage(item.image, item.name);
+                        }}
+                        className="absolute bottom-2 right-2 p-2 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085] z-10"
                       >
-                        {item.status}
-                      </span>
+                        <Download className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+
+                    <div className="p-4">
+                      <h3 className="font-semibold text-white mb-1">
+                        {item.company}
+                      </h3>
+                      <p className="text-sm text-gray-400 mb-2">{item.role}</p>
+
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <Clock className="w-3 h-3" />
+                        <span>{item.duration}</span>
+                        <span className="mx-1">•</span>
+                        <Globe className="w-3 h-3" />
+                        <span>{item.mode}</span>
+                      </div>
+
+                      <div className="mt-3">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            item.status === "completed"
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-yellow-500/20 text-yellow-400"
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-              {/* note */}
-              <div className="w-7xl relative mt-8 p-6 rounded-xl border-l-4 border-amber-500 bg-linear-to-r from-amber-500/5 to-transparent overflow-hidden group">
-                {/* Subtle background pattern */}
+                ))}
+              </div>
+              
+              {/* Note Component */}
+              <div className="relative mt-8 p-6 rounded-xl border-l-4 border-amber-500 bg-linear-to-r from-amber-500/5 to-transparent overflow-hidden group">
                 <div className="absolute inset-0 opacity-5">
                   <div
                     className="absolute inset-0"
                     style={{
-                      backgroundImage: `radial-gradient(circle at 2px 2px, #f59e0b 1px, transparent 0)`,
+                      backgroundImage: `radial-linear(circle at 2px 2px, #f59e0b 1px, transparent 0)`,
                       backgroundSize: "24px 24px",
                     }}
                   />
                 </div>
 
                 <div className="relative flex items-start gap-4">
-                  <div className="shrink-0">
+                  <div className="flex-shrink-0">
                     <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-amber-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                      <Info className="w-4 h-4 text-amber-400" />
                     </div>
                   </div>
 
@@ -727,6 +743,8 @@ const Gallery: React.FC = () => {
                       proof of contribution can be viewed on my{" "}
                       <a
                         href="https://github.com/imanchalsingh"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-amber-400 hover:text-amber-300 transition-colors group/link"
                       >
                         GitHub profile

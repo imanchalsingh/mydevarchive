@@ -65,6 +65,207 @@ type DataItem = {
   [key: string]: any;
 };
 
+// Download image function
+const downloadImage = async (imageUrl: string, fileName: string) => {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${fileName.replace(/\s+/g, "_")}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading image:", error);
+  }
+};
+
+// Modal Component
+const Modal = ({ item, onClose }: { item: DataItem; onClose: () => void }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+    <div className="relative w-full max-w-4xl bg-[#111] rounded-2xl overflow-hidden border border-gray-800">
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
+      >
+        <X className="w-5 h-5 text-white" />
+      </button>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="relative group h-full min-h-100 bg-black">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="w-full h-full object-contain"
+          />
+          <button
+            onClick={() => downloadImage(item.image, item.name)}
+            className="absolute bottom-4 right-4 p-3 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085]"
+          >
+            <Download className="w-5 h-5 text-white" />
+          </button>
+        </div>
+
+        <div className="p-6">
+          <h2 className="text-2xl font-bold text-white mb-4">{item.name}</h2>
+
+          <div className="space-y-4">
+            {item.issuer && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Building className="w-5 h-5 text-[#1abc9c]" />
+                <span>{item.issuer}</span>
+              </div>
+            )}
+
+            {item.company && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Building className="w-5 h-5 text-[#3498db]" />
+                <span>{item.company}</span>
+              </div>
+            )}
+
+            {item.role && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Briefcase className="w-5 h-5 text-[#9b59b6]" />
+                <span>{item.role}</span>
+              </div>
+            )}
+
+            {item.category && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Code className="w-5 h-5 text-[#e74c3c]" />
+                <span>{item.category}</span>
+              </div>
+            )}
+
+            {item.year && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Calendar className="w-5 h-5 text-[#f39c12]" />
+                <span>{item.year}</span>
+              </div>
+            )}
+
+            {item.duration && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Clock className="w-5 h-5 text-[#2ecc71]" />
+                <span>{item.duration}</span>
+              </div>
+            )}
+
+            {item.mode && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Globe className="w-5 h-5 text-[#9b59b6]" />
+                <span>{item.mode}</span>
+              </div>
+            )}
+
+            {item.date && (
+              <div className="flex items-center gap-3 text-gray-300">
+                <Calendar className="w-5 h-5 text-[#f1c40f]" />
+                <span>{item.date}</span>
+              </div>
+            )}
+
+            {item.status && (
+              <div className="mt-4">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm ${
+                    item.status === "completed"
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-yellow-500/20 text-yellow-400"
+                  }`}
+                >
+                  {item.status}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Gallery Card Component
+const GalleryCard = ({ item, index }: { item: DataItem; index: number }) => {
+  const colors = [
+    "#1abc9c",
+    "#16a085",
+    "#2ecc71",
+    "#27ae60",
+    "#3498db",
+    "#2980b9",
+    "#9b59b6",
+    "#8e44ad",
+    "#34495e",
+    "#2c3e50",
+    "#f1c40f",
+    "#f39c12",
+    "#e67e22",
+    "#d35400",
+    "#e74c3c",
+    "#c0392b",
+    "#ecf0f1",
+    "#bdc3c7",
+    "#95a5a6",
+    "#7f8c8d",
+  ];
+
+  return (
+    <div
+      className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
+      onClick={() => {}}
+    >
+      <div className="relative h-48 overflow-hidden bg-black">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            downloadImage(item.image, item.name);
+          }}
+          className="absolute bottom-2 right-2 p-2 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085] z-10"
+        >
+          <Download className="w-4 h-4 text-white" />
+        </button>
+      </div>
+
+      <div className="p-4">
+        <h3 className="font-semibold text-white mb-1 line-clamp-1">
+          {item.name}
+        </h3>
+        <p className="text-sm text-gray-400 mb-3">
+          {item.issuer || item.company || item.event || ""}
+        </p>
+
+        <div className="flex items-center justify-between">
+          <span
+            className="px-2 py-1 text-xs rounded-full"
+            style={{
+              backgroundColor: `${colors[index % colors.length]}20`,
+              color: colors[index % colors.length],
+            }}
+          >
+            {item.category || item.type || item.role || "Achievement"}
+          </span>
+
+          {item.year && (
+            <span className="text-xs text-gray-500">{item.year}</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Gallery: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("overview");
   const [filters, setFilters] = useState<Record<string, string>>({
@@ -137,7 +338,7 @@ const Gallery: React.FC = () => {
     });
 
     const companyCount: Record<string, number> = {};
-    offerLetters.forEach((offer: DataItem) => {
+    offerLetters.forEach((offer) => {
       if (offer.company) {
         companyCount[offer.company] = (companyCount[offer.company] || 0) + 1;
       }
@@ -201,7 +402,7 @@ const Gallery: React.FC = () => {
   const getFilteredItems = (items: DataItem[], section: string) => {
     return items.filter((item) => {
       const searchTerm = searchTerms[section]?.toLowerCase() || "";
-      const matchesSearch = 
+      const matchesSearch =
         item.name?.toLowerCase().includes(searchTerm) ||
         item.issuer?.toLowerCase().includes(searchTerm) ||
         item.company?.toLowerCase().includes(searchTerm) ||
@@ -209,16 +410,16 @@ const Gallery: React.FC = () => {
         item.type?.toLowerCase().includes(searchTerm) ||
         item.role?.toLowerCase().includes(searchTerm) ||
         item.event?.toLowerCase().includes(searchTerm);
-      
+
       const filterValue = filters[section];
       if (filterValue === "all") return matchesSearch;
-      
-      const matchesFilter = 
+
+      const matchesFilter =
         item.category?.toLowerCase() === filterValue.toLowerCase() ||
         item.type?.toLowerCase() === filterValue.toLowerCase() ||
         item.issuer?.toLowerCase() === filterValue.toLowerCase() ||
         item.company?.toLowerCase() === filterValue.toLowerCase();
-      
+
       return matchesSearch && matchesFilter;
     });
   };
@@ -234,194 +435,6 @@ const Gallery: React.FC = () => {
     });
     return Array.from(options);
   };
-
-  // Download image function
-  const downloadImage = async (imageUrl: string, fileName: string) => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${fileName.replace(/\s+/g, "_")}.png`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Error downloading image:", error);
-    }
-  };
-
-  // Modal Component
-  const Modal = ({
-    item,
-    onClose,
-  }: {
-    item: DataItem;
-    onClose: () => void;
-  }) => (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
-      <div className="relative w-full max-w-4xl bg-[#111] rounded-2xl overflow-hidden border border-gray-800">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors"
-        >
-          <X className="w-5 h-5 text-white" />
-        </button>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="relative group h-full min-h-100 bg-black">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-full h-full object-contain"
-            />
-            <button
-              onClick={() => downloadImage(item.image, item.name)}
-              className="absolute bottom-4 right-4 p-3 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085]"
-            >
-              <Download className="w-5 h-5 text-white" />
-            </button>
-          </div>
-
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-4">{item.name}</h2>
-
-            <div className="space-y-4">
-              {item.issuer && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Building className="w-5 h-5 text-[#1abc9c]" />
-                  <span>{item.issuer}</span>
-                </div>
-              )}
-
-              {item.company && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Building className="w-5 h-5 text-[#3498db]" />
-                  <span>{item.company}</span>
-                </div>
-              )}
-
-              {item.role && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Briefcase className="w-5 h-5 text-[#9b59b6]" />
-                  <span>{item.role}</span>
-                </div>
-              )}
-
-              {item.category && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Code className="w-5 h-5 text-[#e74c3c]" />
-                  <span>{item.category}</span>
-                </div>
-              )}
-
-              {item.year && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Calendar className="w-5 h-5 text-[#f39c12]" />
-                  <span>{item.year}</span>
-                </div>
-              )}
-
-              {item.duration && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Clock className="w-5 h-5 text-[#2ecc71]" />
-                  <span>{item.duration}</span>
-                </div>
-              )}
-
-              {item.mode && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Globe className="w-5 h-5 text-[#9b59b6]" />
-                  <span>{item.mode}</span>
-                </div>
-              )}
-
-              {item.date && (
-                <div className="flex items-center gap-3 text-gray-300">
-                  <Calendar className="w-5 h-5 text-[#f1c40f]" />
-                  <span>{item.date}</span>
-                </div>
-              )}
-
-              {item.status && (
-                <div className="mt-4">
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      item.status === "completed"
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-yellow-500/20 text-yellow-400"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  // Gallery Card Component
-  const GalleryCard = ({
-    item,
-    index,
-  }: {
-    item: DataItem;
-    index: number;
-  }) => (
-    <div
-      className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
-      onClick={() => setSelectedItem(item)}
-    >
-      <div className="relative h-48 overflow-hidden bg-black">
-        <img
-          src={item.image}
-          alt={item.name}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            downloadImage(item.image, item.name);
-          }}
-          className="absolute bottom-2 right-2 p-2 bg-[#1abc9c] rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#16a085] z-10"
-        >
-          <Download className="w-4 h-4 text-white" />
-        </button>
-      </div>
-
-      <div className="p-4">
-        <h3 className="font-semibold text-white mb-1 line-clamp-1">
-          {item.name}
-        </h3>
-        <p className="text-sm text-gray-400 mb-3">
-          {item.issuer || item.company || item.event || ""}
-        </p>
-
-        <div className="flex items-center justify-between">
-          <span
-            className="px-2 py-1 text-xs rounded-full"
-            style={{
-              backgroundColor: `${colors[index % colors.length]}20`,
-              color: colors[index % colors.length],
-            }}
-          >
-            {item.category || item.type || item.role || "Achievement"}
-          </span>
-
-          {item.year && (
-            <span className="text-xs text-gray-500">{item.year}</span>
-          )}
-        </div>
-      </div>
-    </div>
-  );
 
   // Overview Page
   const OverviewPage = () => (
@@ -599,7 +612,10 @@ const Gallery: React.FC = () => {
                         ? badges
                         : activeTab === "contributions"
                           ? [...contributionBadges, ...contributionCertificates]
-                          : offerLetters
+                          : offerLetters.map((item) => ({
+                              ...item,
+                              name: item.company,
+                            })),
                   ).map((option) => (
                     <option key={option} value={option}>
                       {option}
@@ -619,11 +635,9 @@ const Gallery: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {getFilteredItems(courseCertificates, "certificates").map(
                 (item, index) => (
-                  <GalleryCard
-                    key={item.id}
-                    item={item}
-                    index={index}
-                  />
+                  <div key={item.id} onClick={() => setSelectedItem(item)}>
+                    <GalleryCard item={item} index={index} />
+                  </div>
                 ),
               )}
             </div>
@@ -632,11 +646,9 @@ const Gallery: React.FC = () => {
           {activeTab === "badges" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {getFilteredItems(badges, "badges").map((item, index) => (
-                <GalleryCard
-                  key={item.id}
-                  item={item}
-                  index={index}
-                />
+                <div key={item.id} onClick={() => setSelectedItem(item)}>
+                  <GalleryCard item={item} index={index} />
+                </div>
               ))}
             </div>
           )}
@@ -645,13 +657,11 @@ const Gallery: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {getFilteredItems(
                 [...contributionBadges, ...contributionCertificates],
-                "contributions"
+                "contributions",
               ).map((item, index) => (
-                <GalleryCard
-                  key={item.id}
-                  item={item}
-                  index={index}
-                />
+                <div key={item.id} onClick={() => setSelectedItem(item)}>
+                  <GalleryCard item={item} index={index} />
+                </div>
               ))}
             </div>
           )}
@@ -659,7 +669,10 @@ const Gallery: React.FC = () => {
           {activeTab === "offers" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {getFilteredItems(offerLetters, "offers").map((item) => (
+                {getFilteredItems(
+                  offerLetters.map((item) => ({ ...item, name: item.company })),
+                  "offers",
+                ).map((item) => (
                   <div
                     key={item.id}
                     className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"
@@ -713,7 +726,7 @@ const Gallery: React.FC = () => {
                   </div>
                 ))}
               </div>
-              
+
               {/* Note Component */}
               <div className="relative mt-8 p-6 rounded-xl border-l-4 border-amber-500 bg-linear-to-r from-amber-500/5 to-transparent overflow-hidden group">
                 <div className="absolute inset-0 opacity-5">
@@ -727,7 +740,7 @@ const Gallery: React.FC = () => {
                 </div>
 
                 <div className="relative flex items-start gap-4">
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
                       <Info className="w-4 h-4 text-amber-400" />
                     </div>

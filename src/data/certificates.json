@@ -340,7 +340,7 @@
     {
       "id": 2,
       "company": "CodeAlpha",
-      "role": "Frontend Developer Intern",
+      "role": "Full Stack Development Intern",
       "color": "#3498db",
       "duration": "1 Month",
       "mode": "Remote",
@@ -358,7 +358,7 @@
     {
       "id": 4,
       "company": "Cognifyz",
-      "role": "Web Development Intern",
+      "role": "Full Stack Development Intern",
       "color": "#e74c3c",
       "duration": "1 Month",
       "mode": "Remote",
@@ -367,7 +367,7 @@
     {
       "id": 5,
       "company": "Oasis Infobyte",
-      "role": "Web Development Intern",
+      "role": "Web Development and Designing Intern",
       "color": "#f39c12",
       "duration": "1 Month",
       "mode": "Remote",
@@ -375,27 +375,27 @@
     },
     {
       "id": 6,
-      "company": "Prodigy Infotech",
-      "role": "Web Development Intern",
-      "color": "#8e44ad",
+      "company": "Codveda Technologies",
+      "role": "Full Stack Development Intern",
+      "color": "#d35400",
       "duration": "1 Month",
       "mode": "Remote",
       "status": "completed"
     },
     {
       "id": 7,
-      "company": "SkillCraft Technology",
-      "role": "Web Development Intern",
-      "color": "#2c3e50",
+      "company": "Prodigy Infotech",
+      "role": "Software Development Intern",
+      "color": "#8e44ad",
       "duration": "1 Month",
       "mode": "Remote",
       "status": "completed"
     },
     {
       "id": 8,
-      "company": "Codveda Technologies",
-      "role": "Web Development Intern",
-      "color": "#d35400",
+      "company": "SkillCraft Technology",
+      "role": "Software Development Intern",
+      "color": "#2c3e50",
       "duration": "1 Month",
       "mode": "Remote",
       "status": "completed"

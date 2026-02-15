@@ -37,6 +37,20 @@ import codechefBadge1 from "../Badges/CodeChefBadge (1).png";
 import codechefBadge2 from "../Badges/CodeChefBadge.png";
 import postmanBadge from "../Badges/Postman - Postman API Fundamentals Student Expert - 2025-08-17.png";
 import skillsoftWebDevBadge from "../Badges/web dev badge skillsoft.png";
+// Microsoft Badges Imports
+import copilotChat from "../Badges/MicroSoftBadges/360 Copilot Chat.png";
+import automateDevTasks from "../Badges/MicroSoftBadges/Automate development tasks.png";
+import githubCodespaces from "../Badges/MicroSoftBadges/Code with github Codespaces.png";
+import equipLearnersAi from "../Badges/MicroSoftBadges/Equip Learners with Ai tools.png";
+import githubCopilotJS from "../Badges/MicroSoftBadges/Github copilot with js.png";
+import introGithubCopilot from "../Badges/MicroSoftBadges/Intro to github copilot.png";
+import introAzureCloudShell from "../Badges/MicroSoftBadges/Intro to Azure cloud shell.png";
+import introGithub from "../Badges/MicroSoftBadges/Intro to github.png";
+import introPromptEng from "../Badges/MicroSoftBadges/Introduction to Prompt Eng.png";
+import meanStackAzure from "../Badges/MicroSoftBadges/MEAN stack on azure linux virtual machine.png";
+import responsibleAi from "../Badges/MicroSoftBadges/Responsible Ai.png";
+import advancedGithubCopilot from "../Badges/MicroSoftBadges/Using Advanced github copilot.png";
+import webDevBadge from "../Badges/MicroSoftBadges/web dev.png";
 
 // Contribution Certificates Imports
 import wocs2025Certificate from "../contribution/Certificates/WoCS2025_contributor_Anchal_Singh.png";
@@ -47,7 +61,7 @@ import ecwocContributorBadge from "../contribution/Badges/ECWoC-Contributor-ID-T
 import eliteHackBadge from "../contribution/Badges/elite-hack-id-card-Anchal Singh  (1)~2.jpg";
 import oscGlobalBadge from "../contribution/Badges/open-source-connect-global-ID.png";
 import swocTicketBadge from "../contribution/Badges/swoc ticket.jpg";
-import wocsBadge from "../contribution/Badges/WOCS-badge.png"
+import wocsBadge from "../contribution/Badges/WOCS-badge.png";
 
 // Offer Letters Imports
 import codsoftOffer from "../offerLetters/CodSoft.png";
@@ -356,6 +370,123 @@ export const badges = [
     color: "#9b59b6",
     date: "2024",
     image: skillsoftWebDevBadge,
+  },
+  {
+    id: 5,
+    name: "360 Copilot Chat",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#1abc9c",
+    date: "2024",
+    image: copilotChat,
+  },
+  {
+    id: 6,
+    name: "Automate Development Tasks",
+    issuer: "Microsoft",
+    category: "Development",
+    color: "#3498db",
+    date: "2024",
+    image: automateDevTasks,
+  },
+  {
+    id: 7,
+    name: "Code with GitHub Codespaces",
+    issuer: "Microsoft",
+    category: "Development",
+    color: "#9b59b6",
+    date: "2024",
+    image: githubCodespaces,
+  },
+  {
+    id: 8,
+    name: "Equip Learners with AI Tools",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#e74c3c",
+    date: "2024",
+    image: equipLearnersAi,
+  },
+  {
+    id: 9,
+    name: "GitHub Copilot with JavaScript",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#f39c12",
+    date: "2024",
+    image: githubCopilotJS,
+  },
+  {
+    id: 10,
+    name: "Introduction to GitHub Copilot",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#2ecc71",
+    date: "2024",
+    image: introGithubCopilot,
+  },
+  {
+    id: 11,
+    name: "Introduction to Azure Cloud Shell",
+    issuer: "Microsoft",
+    category: "Cloud",
+    color: "#2980b9",
+    date: "2024",
+    image: introAzureCloudShell,
+  },
+  {
+    id: 12,
+    name: "Introduction to GitHub",
+    issuer: "Microsoft",
+    category: "Development",
+    color: "#8e44ad",
+    date: "2024",
+    image: introGithub,
+  },
+  {
+    id: 13,
+    name: "Introduction to Prompt Engineering",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#d35400",
+    date: "2024",
+    image: introPromptEng,
+  },
+  {
+    id: 14,
+    name: "MEAN Stack on Azure Linux VM",
+    issuer: "Microsoft",
+    category: "Full Stack",
+    color: "#16a085",
+    date: "2024",
+    image: meanStackAzure,
+  },
+  {
+    id: 15,
+    name: "Responsible AI",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#c0392b",
+    date: "2024",
+    image: responsibleAi,
+  },
+  {
+    id: 16,
+    name: "Advanced GitHub Copilot",
+    issuer: "Microsoft",
+    category: "AI",
+    color: "#27ae60",
+    date: "2024",
+    image: advancedGithubCopilot,
+  },
+  {
+    id: 17,
+    name: "Web Development",
+    issuer: "Microsoft",
+    category: "Frontend",
+    color: "#7f8c8d",
+    date: "2024",
+    image: webDevBadge,
   },
 ];
 

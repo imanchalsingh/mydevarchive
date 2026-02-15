@@ -1,0 +1,404 @@
+{
+  "courseCertificates": [
+    {
+      "id": 1,
+      "name": "Frontend Development Libraries",
+      "issuer": "CodeCamp",
+      "category": "Frontend",
+      "color": "#1abc9c"
+    },
+    {
+      "id": 2,
+      "name": "Legacy Responsive Web Design",
+      "issuer": "CodeCamp",
+      "category": "Frontend",
+      "color": "#16a085"
+    },
+    {
+      "id": 3,
+      "name": "SQL with PostgreSQL",
+      "issuer": "CodeSignal",
+      "category": "Database",
+      "color": "#2ecc71"
+    },
+    {
+      "id": 4,
+      "name": "AI Assisted Development",
+      "issuer": "CodingNinja",
+      "category": "AI",
+      "color": "#27ae60"
+    },
+    {
+      "id": 5,
+      "name": "CS Fundamentals",
+      "issuer": "CodingNinja",
+      "category": "Computer Science",
+      "color": "#3498db"
+    },
+    {
+      "id": 6,
+      "name": "ChatGPT",
+      "issuer": "CodingNinja",
+      "category": "AI",
+      "color": "#2980b9"
+    },
+    {
+      "id": 7,
+      "name": "Fundamentals of CSS",
+      "issuer": "CodingNinja",
+      "category": "Frontend",
+      "color": "#9b59b6"
+    },
+    {
+      "id": 8,
+      "name": "Fundamentals of HTML",
+      "issuer": "CodingNinja",
+      "category": "Frontend",
+      "color": "#8e44ad"
+    },
+    {
+      "id": 9,
+      "name": "Web Development",
+      "issuer": "GreatLearning",
+      "category": "Full Stack",
+      "color": "#34495e"
+    },
+    {
+      "id": 10,
+      "name": "CSS",
+      "issuer": "HackerRank",
+      "category": "Frontend",
+      "color": "#2c3e50"
+    },
+    {
+      "id": 11,
+      "name": "JavaScript",
+      "issuer": "HackerRank",
+      "category": "Frontend",
+      "color": "#f1c40f"
+    },
+    {
+      "id": 12,
+      "name": "Problem Solving",
+      "issuer": "HackerRank",
+      "category": "Algorithms",
+      "color": "#f39c12"
+    },
+    {
+      "id": 13,
+      "name": "Python Basic",
+      "issuer": "HackerRank",
+      "category": "Programming",
+      "color": "#e67e22"
+    },
+    {
+      "id": 14,
+      "name": "React",
+      "issuer": "HackerRank",
+      "category": "Frontend",
+      "color": "#d35400"
+    },
+    {
+      "id": 15,
+      "name": "Bootstrap",
+      "issuer": "InfosysSpringboard",
+      "category": "Frontend",
+      "color": "#e74c3c"
+    },
+    {
+      "id": 16,
+      "name": "PostgreSQL",
+      "issuer": "InfosysSpringboard",
+      "category": "Database",
+      "color": "#c0392b"
+    },
+    {
+      "id": 17,
+      "name": "React Webpack",
+      "issuer": "InfosysSpringboard",
+      "category": "Frontend",
+      "color": "#ecf0f1"
+    },
+    {
+      "id": 18,
+      "name": "Aptitude",
+      "issuer": "LCAT",
+      "category": "Soft Skills",
+      "color": "#bdc3c7"
+    },
+    {
+      "id": 19,
+      "name": "Postman API Student Expert",
+      "issuer": "PostmanAPI",
+      "category": "API",
+      "color": "#95a5a6"
+    },
+    {
+      "id": 20,
+      "name": "ExpressJS",
+      "issuer": "SimpliLearn",
+      "category": "Backend",
+      "color": "#7f8c8d"
+    },
+    {
+      "id": 21,
+      "name": "FullStack Development",
+      "issuer": "SimpliLearn",
+      "category": "Full Stack",
+      "color": "#1abc9c"
+    },
+    {
+      "id": 22,
+      "name": "Angular",
+      "issuer": "SoloLearn",
+      "category": "Frontend",
+      "color": "#16a085"
+    },
+    {
+      "id": 23,
+      "name": "C++",
+      "issuer": "SoloLearn",
+      "category": "Programming",
+      "color": "#2ecc71"
+    },
+    {
+      "id": 24,
+      "name": "Frontend for Beginners",
+      "issuer": "SoloLearn",
+      "category": "Frontend",
+      "color": "#27ae60"
+    },
+    {
+      "id": 25,
+      "name": "HTML",
+      "issuer": "SoloLearn",
+      "category": "Frontend",
+      "color": "#3498db"
+    },
+    {
+      "id": 26,
+      "name": "JavaScript",
+      "issuer": "SoloLearn",
+      "category": "Frontend",
+      "color": "#2980b9"
+    },
+    {
+      "id": 27,
+      "name": "Python",
+      "issuer": "SoloLearn",
+      "category": "Programming",
+      "color": "#9b59b6"
+    },
+    {
+      "id": 28,
+      "name": "Web Development",
+      "issuer": "SoloLearn",
+      "category": "Full Stack",
+      "color": "#8e44ad"
+    },
+    {
+      "id": 29,
+      "name": "HTML CSS JavaScript",
+      "issuer": "Udemy",
+      "category": "Frontend",
+      "color": "#34495e"
+    },
+    {
+      "id": 30,
+      "name": "50 HTML CSS JS Projects",
+      "issuer": "Udemy",
+      "category": "Projects",
+      "color": "#2c3e50"
+    },
+    {
+      "id": 31,
+      "name": "20 JavaScript Projects",
+      "issuer": "Udemy",
+      "category": "Projects",
+      "color": "#f1c40f"
+    },
+    {
+      "id": 32,
+      "name": "JavaScript",
+      "issuer": "Udemy",
+      "category": "Frontend",
+      "color": "#f39c12"
+    }
+  ],
+
+  "badges": [
+    {
+      "id": 1,
+      "name": "CodeChef Badge",
+      "issuer": "CodeChef",
+      "category": "Competitive",
+      "color": "#1abc9c",
+      "date": "2024"
+    },
+    {
+      "id": 2,
+      "name": "CodeChef Achievement",
+      "issuer": "CodeChef",
+      "category": "Competitive",
+      "color": "#3498db",
+      "date": "2024"
+    },
+    {
+      "id": 3,
+      "name": "Postman API Fundamentals Student Expert",
+      "issuer": "Postman",
+      "category": "API",
+      "color": "#e74c3c",
+      "date": "2025"
+    },
+    {
+      "id": 4,
+      "name": "Web Development Badge",
+      "issuer": "Skillsoft",
+      "category": "Frontend",
+      "color": "#9b59b6",
+      "date": "2024"
+    }
+  ],
+
+  "contributionBadges": [
+    {
+      "id": 1,
+      "name": "ECWoC 2026 Participant",
+      "event": "ECWoC",
+      "type": "Participant",
+      "color": "#1abc9c",
+      "year": "2026",
+      "role": "Contributor"
+    },
+    {
+      "id": 2,
+      "name": "ECWoC Contributor",
+      "event": "ECWoC",
+      "type": "Contributor",
+      "color": "#3498db",
+      "year": "2026",
+      "role": "Open Source"
+    },
+    {
+      "id": 3,
+      "name": "WOCS Badge",
+      "event": "WOCS",
+      "type": "Recognition",
+      "color": "#9b59b6",
+      "year": "2025"
+    },
+    {
+      "id": 4,
+      "name": "Elite Hack ID Card",
+      "event": "Elite Hack",
+      "type": "Hackathon",
+      "color": "#e74c3c",
+      "role": "Participant"
+    },
+    {
+      "id": 5,
+      "name": "Open Source Connect Global",
+      "event": "OSC Global",
+      "type": "Networking",
+      "color": "#f39c12",
+      "year": "2025"
+    },
+    {
+      "id": 6,
+      "name": "SWOC Ticket",
+      "event": "SWOC",
+      "type": "Ticket",
+      "color": "#8e44ad",
+      "year": "2025"
+    }
+  ],
+
+  "contributionCertificates": [
+    {
+      "id": 1,
+      "name": "WoCS 2025 Contributor Certificate",
+      "event": "WoCS (Women in Code School)",
+      "type": "Contribution",
+      "color": "#9b59b6",
+      "year": "2025",
+      "role": "Contributor",
+      "issuer": "WoCS"
+    }
+  ],
+
+  "offerLetters": [
+    {
+      "id": 1,
+      "company": "CodSoft",
+      "role": "Web Development Intern",
+      "color": "#1abc9c",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 2,
+      "company": "CodeAlpha",
+      "role": "Frontend Developer Intern",
+      "color": "#3498db",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 3,
+      "company": "CodeClause",
+      "role": "Web Development Intern",
+      "color": "#9b59b6",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 4,
+      "company": "Cognifyz",
+      "role": "Web Development Intern",
+      "color": "#e74c3c",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 5,
+      "company": "Oasis Infobyte",
+      "role": "Web Development Intern",
+      "color": "#f39c12",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 6,
+      "company": "Prodigy Infotech",
+      "role": "Web Development Intern",
+      "color": "#8e44ad",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 7,
+      "company": "SkillCraft Technology",
+      "role": "Web Development Intern",
+      "color": "#2c3e50",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    },
+    {
+      "id": 8,
+      "company": "Codveda Technologies",
+      "role": "Web Development Intern",
+      "color": "#d35400",
+      "duration": "1 Month",
+      "mode": "Remote",
+      "status": "completed"
+    }
+  ]
+}

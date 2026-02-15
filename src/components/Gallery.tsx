@@ -659,7 +659,7 @@ const Gallery: React.FC = () => {
           {activeTab === "offers" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {getFilteredItems(offerLetters, "offers").map((item, index) => (
+                {getFilteredItems(offerLetters, "offers").map((item) => (
                   <div
                     key={item.id}
                     className="group relative bg-[#111] rounded-xl overflow-hidden border border-gray-800 hover:border-[#1abc9c] transition-all duration-300 cursor-pointer"

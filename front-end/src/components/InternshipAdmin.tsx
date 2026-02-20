@@ -503,7 +503,7 @@ const InternshipCard = ({
   onToggle,
 }: {
   internship: Internship;
-  onDelete: (id: string) => void;
+ onDelete: (id: string, title: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
 }) => {
@@ -543,7 +543,7 @@ const InternshipCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(internship._id);
+                onDelete(internship._id,internship.role);
               }}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
             >

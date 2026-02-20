@@ -282,7 +282,7 @@ const CertificateCard = ({
   onToggle,
 }: {
   cert: Certificate;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
 }) => {
@@ -332,7 +332,7 @@ const CertificateCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(cert._id);
+                onDelete(cert._id,cert.title);
               }}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
             >

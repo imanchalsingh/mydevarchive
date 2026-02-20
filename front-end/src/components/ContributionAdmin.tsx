@@ -345,7 +345,7 @@ const ContributionCard = ({
   onToggle,
 }: {
   contribution: Contribution;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
 }) => {
@@ -435,7 +435,7 @@ const ContributionCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(contribution._id);
+                onDelete(contribution._id,contribution.title);
               }}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
             >

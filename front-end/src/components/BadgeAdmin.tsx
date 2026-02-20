@@ -279,7 +279,7 @@ const BadgeCard = ({
   onToggle 
 }: { 
   badge: Badge; 
-  onDelete: (id: string) => void;
+  onDelete: (id: string, title: string) => void;
   isExpanded: boolean;
   onToggle: () => void;
 }) => {
@@ -330,7 +330,7 @@ const BadgeCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(badge._id);
+                onDelete(badge._id, badge.title);
               }}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
             >

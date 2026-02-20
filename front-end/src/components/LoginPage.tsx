@@ -36,8 +36,6 @@ export default function Login() {
         password,
       });
 
-      // If remember me is checked, we could store in localStorage with longer expiry
-      // This would be handled in your auth context normally
       login(data.token, {
         _id: data._id,
         name: data.name,
@@ -53,12 +51,6 @@ export default function Login() {
       setError(error.response?.data?.message || "Invalid email or password");
       setIsLoading(false);
     }
-  };
-
-  // For demo purposes - you can remove this in production
-  const fillDemoCredentials = () => {
-    setEmail("admin@example.com");
-    setPassword("password123");
   };
 
   return (
@@ -223,15 +215,6 @@ export default function Login() {
                   </span>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="w-full py-3 bg-gray-900/50 border border-gray-700 text-gray-400 rounded-xl hover:bg-gray-800/50 hover:text-white hover:border-blue-500/50 transition-all flex items-center justify-center gap-2 group"
-              >
-                <Sparkles className="w-4 h-4 text-yellow-500 group-hover:rotate-12 transition-transform" />
-                <span>Fill Demo Credentials</span>
-              </button>
             </form>
 
             {/* Footer */}

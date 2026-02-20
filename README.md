@@ -21,6 +21,6 @@ A personal development portfolio & certificate management system to upload, orga
 
 ## Note
 
-- Currently a personal project in progress - my archive will be made public (read-only) soon!
+- Currently this personal project in progress - my archive will be made public (read-only) soon!
 
 ### Thank You

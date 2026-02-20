@@ -19,4 +19,8 @@ A personal development portfolio & certificate management system to upload, orga
 - REST API powered backend for CRUD operations.
 - Cloudinary integration for image hosting.
 
-### Thank You!
+## Note
+
+- Currently a personal project in progress - my archive will be made public (read-only) soon!
+
+### Thank You

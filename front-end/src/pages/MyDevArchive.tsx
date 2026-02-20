@@ -146,11 +146,6 @@ const MobileMenu = ({
                   className={`w-5 h-5 ${activeTab === tab.id ? "text-blue-400" : ""}`}
                 />
                 <span className="font-medium">{tab.label}</span>
-                {tab.id === "contributions" && (
-                  <span className="ml-auto bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full">
-                    3
-                  </span>
-                )}
               </button>
             );
           })}
@@ -189,7 +184,7 @@ const Sidebar = ({
             </div>
           ) : (
             <h2 className="text-xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
-              Dev Archive
+              My Dev Archive
             </h2>
           )}
         </div>
@@ -354,30 +349,6 @@ const Header = ({
   );
 };
 
-// Quick Stats Component
-const QuickStats = () => {
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
-        <p className="text-gray-400 text-xs">Certificates</p>
-        <p className="text-lg font-bold text-white">24</p>
-      </div>
-      <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
-        <p className="text-gray-400 text-xs">Badges</p>
-        <p className="text-lg font-bold text-white">18</p>
-      </div>
-      <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
-        <p className="text-gray-400 text-xs">Contributions</p>
-        <p className="text-lg font-bold text-white">32</p>
-      </div>
-      <div className="bg-gray-800/30 rounded-lg p-3 border border-gray-700">
-        <p className="text-gray-400 text-xs">Internships</p>
-        <p className="text-lg font-bold text-white">6</p>
-      </div>
-    </div>
-  );
-};
-
 export default function MyDevArchive() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -427,13 +398,6 @@ export default function MyDevArchive() {
         )}
 
         <div className="p-4 md:p-6">
-          {/* Quick Stats - Show only on mobile, hide on dashboard */}
-          {activeTab !== "dashboard" && (
-            <div className="lg:hidden">
-              <QuickStats />
-            </div>
-          )}
-
           {/* Tab navigation pills for mobile */}
           <div className="lg:hidden overflow-x-auto pb-2 mb-4">
             <div className="flex gap-2 min-w-max">

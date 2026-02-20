@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/authContext";
 import BadgeAdmin from "../components/BadgeAdmin";
 import CertificatesAdmin from "../components/CertificateAdmin";
@@ -29,12 +29,37 @@ import {
 
 // Tab configuration
 const tabs = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, component: Dashboard },
-  { id: "certificates", label: "Certificates", icon: NotebookIcon, component: CertificatesAdmin },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    component: Dashboard,
+  },
+  {
+    id: "certificates",
+    label: "Certificates",
+    icon: NotebookIcon,
+    component: CertificatesAdmin,
+  },
   { id: "badges", label: "Badges", icon: Award, component: BadgeAdmin },
-  { id: "contributions", label: "Contributions", icon: TrendingUp, component: ContributionAdmin },
-  { id: "internships", label: "Internships", icon: Briefcase, component: InternshipAdmin },
-  { id: "contribution-certs", label: "Contribution Certs", icon: BookOpen, component: ContributionCertAdmin },
+  {
+    id: "contributions",
+    label: "Contributions",
+    icon: TrendingUp,
+    component: ContributionAdmin,
+  },
+  {
+    id: "internships",
+    label: "Internships",
+    icon: Briefcase,
+    component: InternshipAdmin,
+  },
+  {
+    id: "contribution-certs",
+    label: "Contribution Certs",
+    icon: BookOpen,
+    component: ContributionCertAdmin,
+  },
 ];
 
 // Notification component
@@ -56,7 +81,10 @@ const UserMenu = ({ onClose }: { onClose: () => void }) => (
       Settings
     </button>
     <hr className="border-gray-700 my-2" />
-    <button className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-2">
+    <button
+      onClick={onClose}
+      className="w-full px-4 py-2 text-left text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors flex items-center gap-2"
+    >
       <LogOut className="w-4 h-4" />
       Sign Out
     </button>
@@ -64,9 +92,14 @@ const UserMenu = ({ onClose }: { onClose: () => void }) => (
 );
 
 // Mobile menu component
-const MobileMenu = ({ isOpen, onClose, activeTab, onTabChange }: { 
-  isOpen: boolean; 
-  onClose: () => void; 
+const MobileMenu = ({
+  isOpen,
+  onClose,
+  activeTab,
+  onTabChange,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
   activeTab: string;
   onTabChange: (id: string) => void;
 }) => {
@@ -74,19 +107,25 @@ const MobileMenu = ({ isOpen, onClose, activeTab, onTabChange }: {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden" onClick={onClose} />
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+        onClick={onClose}
+      />
       <div className="fixed inset-y-0 left-0 w-64 bg-gray-900 border-r border-gray-800 z-50 lg:hidden transform transition-transform duration-300 ease-in-out">
         <div className="p-4 border-b border-gray-800">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
               Dev Archive
             </h2>
-            <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-lg">
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-800 rounded-lg"
+            >
               <X className="w-5 h-5 text-gray-400" />
             </button>
           </div>
         </div>
-        
+
         <nav className="p-4">
           {tabs.map((tab) => {
             const Icon = tab.icon;
@@ -99,11 +138,13 @@ const MobileMenu = ({ isOpen, onClose, activeTab, onTabChange }: {
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
                   activeTab === tab.id
-                    ? "bg-gradient-to-r from-blue-500/20 to-yellow-500/20 text-white border-l-4 border-yellow-400"
+                    ? "bg-linear-to-r from-blue-500/20 to-yellow-500/20 text-white border-l-4 border-yellow-400"
                     : "text-gray-400 hover:bg-gray-800 hover:text-white"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${activeTab === tab.id ? "text-blue-400" : ""}`} />
+                <Icon
+                  className={`w-5 h-5 ${activeTab === tab.id ? "text-blue-400" : ""}`}
+                />
                 <span className="font-medium">{tab.label}</span>
                 {tab.id === "contributions" && (
                   <span className="ml-auto bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full">
@@ -120,14 +161,14 @@ const MobileMenu = ({ isOpen, onClose, activeTab, onTabChange }: {
 };
 
 // Sidebar component
-const Sidebar = ({ 
-  isCollapsed, 
-  onToggle, 
-  activeTab, 
-  onTabChange 
-}: { 
-  isCollapsed: boolean; 
-  onToggle: () => void; 
+const Sidebar = ({
+  isCollapsed,
+  onToggle,
+  activeTab,
+  onTabChange,
+}: {
+  isCollapsed: boolean;
+  onToggle: () => void;
   activeTab: string;
   onTabChange: (id: string) => void;
 }) => {
@@ -139,13 +180,15 @@ const Sidebar = ({
     >
       <div className="flex flex-col h-full">
         {/* Logo */}
-        <div className={`p-4 border-b border-gray-800 ${isCollapsed ? "text-center" : ""}`}>
+        <div
+          className={`p-4 border-b border-gray-800 ${isCollapsed ? "text-center" : ""}`}
+        >
           {isCollapsed ? (
-            <div className="w-10 h-10 mx-auto bg-gradient-to-br from-blue-500 to-yellow-500 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 mx-auto bg-linear-to-br from-blue-500 to-yellow-500 rounded-xl flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
           ) : (
-            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
+            <h2 className="text-xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
               Dev Archive
             </h2>
           )}
@@ -161,11 +204,13 @@ const Sidebar = ({
                 onClick={() => onTabChange(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all group relative ${
                   activeTab === tab.id
-                    ? "bg-gradient-to-r from-blue-500/20 to-yellow-500/20 text-white"
+                    ? "bg-linear-to-r from-blue-500/20 to-yellow-500/20 text-white"
                     : "text-gray-400 hover:bg-gray-800 hover:text-white"
                 }`}
               >
-                <Icon className={`w-5 h-5 ${activeTab === tab.id ? "text-blue-400" : ""}`} />
+                <Icon
+                  className={`w-5 h-5 ${activeTab === tab.id ? "text-blue-400" : ""}`}
+                />
                 {!isCollapsed && (
                   <>
                     <span className="font-medium">{tab.label}</span>
@@ -192,7 +237,11 @@ const Sidebar = ({
             onClick={onToggle}
             className="w-full p-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-gray-400 hover:text-white transition-colors flex items-center justify-center"
           >
-            {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+            {isCollapsed ? (
+              <ChevronRight className="w-5 h-5" />
+            ) : (
+              <ChevronLeft className="w-5 h-5" />
+            )}
           </button>
         </div>
       </div>
@@ -201,12 +250,12 @@ const Sidebar = ({
 };
 
 // Header component
-const Header = ({ 
-  onMenuClick, 
+const Header = ({
+  onMenuClick,
   activeTab,
-  onSearch 
-}: { 
-  onMenuClick: () => void; 
+  onSearch,
+}: {
+  onMenuClick: () => void;
   activeTab: string;
   onSearch: (term: string) => void;
 }) => {
@@ -214,7 +263,8 @@ const Header = ({
   const [isDark, setIsDark] = useState(true);
   const { logout } = useAuth();
 
-  const activeTabLabel = tabs.find(t => t.id === activeTab)?.label || "Dashboard";
+  const activeTabLabel =
+    tabs.find((t) => t.id === activeTab)?.label || "Dashboard";
 
   return (
     <header className="sticky top-0 z-20 bg-gray-900/80 backdrop-blur-xl border-b border-gray-800">
@@ -226,8 +276,10 @@ const Header = ({
           >
             <Menu className="w-6 h-6" />
           </button>
-          <h1 className="text-xl font-semibold text-white lg:hidden">{activeTabLabel}</h1>
-          
+          <h1 className="text-xl font-semibold text-white lg:hidden">
+            {activeTabLabel}
+          </h1>
+
           {/* Search Bar - Hidden on mobile */}
           <div className="hidden lg:block relative w-96">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -246,7 +298,11 @@ const Header = ({
             onClick={() => setIsDark(!isDark)}
             className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white relative"
           >
-            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {isDark ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5" />
+            )}
           </button>
 
           {/* Notifications */}
@@ -261,12 +317,14 @@ const Header = ({
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 p-1 hover:bg-gray-800 rounded-lg"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-yellow-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-linear-to-br from-blue-500 to-yellow-500 rounded-lg flex items-center justify-center">
                 <User className="w-4 h-4 text-white" />
               </div>
               <span className="hidden md:block text-white">Admin</span>
             </button>
-            {showUserMenu && <UserMenu onClose={() => setShowUserMenu(false)} />}
+            {showUserMenu && (
+              <UserMenu onClose={() => setShowUserMenu(false)} />
+            )}
           </div>
 
           {/* Logout Button */}
@@ -327,7 +385,8 @@ export default function MyDevArchive() {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Render active component
-  const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component || Dashboard;
+  const ActiveComponent =
+    tabs.find((tab) => tab.id === activeTab)?.component || Dashboard;
 
   // Handle search
   const handleSearch = (term: string) => {
@@ -336,7 +395,7 @@ export default function MyDevArchive() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950">
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950">
       {/* Sidebar for desktop */}
       <Sidebar
         isCollapsed={isSidebarCollapsed}
@@ -359,7 +418,13 @@ export default function MyDevArchive() {
           isSidebarCollapsed ? "lg:ml-20" : "lg:ml-64"
         }`}
       >
-        <Header onMenuClick={() => setIsMobileMenuOpen(true)} activeTab={activeTab} onSearch={handleSearch} />
+        {searchTerm && (
+          <Header
+            onMenuClick={() => setIsMobileMenuOpen(true)}
+            activeTab={activeTab}
+            onSearch={handleSearch}
+          />
+        )}
 
         <div className="p-4 md:p-6">
           {/* Quick Stats - Show only on mobile, hide on dashboard */}
@@ -380,7 +445,7 @@ export default function MyDevArchive() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all ${
                       activeTab === tab.id
-                        ? "bg-gradient-to-r from-blue-500 to-yellow-500 text-white"
+                        ? "bg-linear-to-r from-blue-500 to-yellow-500 text-white"
                         : "bg-gray-800 text-gray-400 hover:bg-gray-700"
                     }`}
                   >
@@ -394,7 +459,7 @@ export default function MyDevArchive() {
 
           {/* Active component */}
           <div className="bg-gray-800/30 rounded-2xl border border-gray-700 p-4 md:p-6">
-            <ActiveComponent searchTerm={searchTerm} />
+            <ActiveComponent />
           </div>
 
           {/* Footer */}

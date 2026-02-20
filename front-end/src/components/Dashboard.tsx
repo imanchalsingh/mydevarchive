@@ -21,6 +21,7 @@ import {
   ChevronRight,
   MoreVertical,
   NotebookText,
+  LucideGitGraph,
 } from "lucide-react";
 import API from "../api/axios";
 import {
@@ -569,15 +570,20 @@ const Dashboard = () => {
       <div className="relative container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-2">
-              <span className="bg-linear-to-r from-blue-400 via-blue-500 to-yellow-500 bg-clip-text text-transparent">
-                Analytics Dashboard
-              </span>
-            </h1>
-            <p className="text-gray-400 text-lg">
-              Track your achievements and progress
-            </p>
+          <div className="relative flex items-center gap-4">
+            <div className="p-4 bg-linear-to-br from-blue-500 to-yellow-500 rounded-2xl shadow-lg shadow-blue-500/20">
+              <LucideGitGraph className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold">
+                <span className="bg-linear-to-r from-blue-400 via-blue-500 to-yellow-500 bg-clip-text text-transparent">
+                  Analytics Dashboard
+                </span>
+              </h1>
+              <p className="text-gray-400 text-lg mt-2">
+                Track your achievements and progress
+              </p>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 mt-4 md:mt-0">

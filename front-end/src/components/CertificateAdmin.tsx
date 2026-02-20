@@ -14,6 +14,7 @@ import {
   Grid,
   List,
   Folder,
+  LetterText,
 } from "lucide-react";
 
 export interface Certificate {
@@ -332,7 +333,7 @@ const CertificateCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDelete(cert._id,cert.title);
+                onDelete(cert._id, cert.title);
               }}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
             >
@@ -502,15 +503,21 @@ export default function CertificatesAdmin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">
-            <span className="bg-linear-to-r from-blue-400 via-blue-500 to-yellow-500 bg-clip-text text-transparent">
-              Certificates
-            </span>
-          </h1>
-          <p className="text-gray-400 text-lg">
-            Manage your professional certifications
-          </p>
+
+        <div className="relative flex items-center gap-4">
+          <div className="p-4 bg-linear-to-br from-blue-500 to-yellow-500 rounded-2xl shadow-lg shadow-blue-500/20">
+            <LetterText className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold">
+              <span className="bg-linear-to-r from-blue-400 via-blue-500 to-yellow-500 bg-clip-text text-transparent">
+                Certificates
+              </span>
+            </h1>
+            <p className="text-gray-400 text-lg mt-2">
+              Manage your professional courses completion certifications
+            </p>
+          </div>
         </div>
 
         {/* Controls Bar */}

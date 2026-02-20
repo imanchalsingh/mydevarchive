@@ -1,3 +1,14 @@
 node_modules
 .env
 dist
+
+admin.js
+badge.js
+cert.js
+cont.js
+intern.js
+contcert.js
+badgeData.js
+certificatesData.js
+contData.js
+offerLetter.js

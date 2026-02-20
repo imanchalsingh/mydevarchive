@@ -1,5 +1,5 @@
 import express from "express";
-import Badge from "../models/Badge.js";
+import ContributionCert from "../models/ContributionCert.js";
 import { protect } from "../middleware/authMiddleware.js";
 import upload from "../middleware/uploadMiddleware.js";
 
@@ -7,8 +7,8 @@ const router = express.Router();
 
 // PUBLIC GET
 router.get("/", async (req, res) => {
-  const badges = await Badge.find().sort({ createdAt: -1 });
-  res.json(badges);
+  const contributions = await ContributionCert.find().sort({ createdAt: -1 });
+  res.json(contributions);
 });
 
 // CREATE
@@ -17,14 +17,15 @@ router.post(
   protect,
   upload.single("image"),
   async (req, res) => {
-    const badge = await Badge.create({
+    const contribution = await ContributionCert.create({
       title: req.body.title,
-      platform: req.body.platform,
+      type: req.body.type,
+      referenceId: req.body.referenceId,
       description: req.body.description,
       image: req.file ? req.file.path : "",
     });
 
-    res.status(201).json(badge);
+    res.status(201).json(contribution);
   }
 );
 
@@ -36,7 +37,8 @@ router.put(
   async (req, res) => {
     const updateData = {
       title: req.body.title,
-      platform: req.body.platform,
+      type: req.body.type,
+      referenceId: req.body.referenceId,
       description: req.body.description,
     };
 
@@ -44,7 +46,7 @@ router.put(
       updateData.image = req.file.path;
     }
 
-    const updated = await Badge.findByIdAndUpdate(
+    const updated = await ContributionCert.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true }
@@ -56,8 +58,8 @@ router.put(
 
 // DELETE
 router.delete("/:id", protect, async (req, res) => {
-  await Badge.findByIdAndDelete(req.params.id);
-  res.json({ message: "Badge Deleted" });
+  await ContributionCert.findByIdAndDelete(req.params.id);
+  res.json({ message: "Contribution Deleted" });
 });
 
 export default router;

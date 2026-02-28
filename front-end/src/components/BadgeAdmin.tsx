@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import API from "../api/axios";
 import {
   Search,
   Plus,
   Trash2,
   X,
-  ChevronDown,
-  ChevronUp,
   Filter,
   Image as ImageIcon,
   Upload,
@@ -16,6 +14,9 @@ import {
   Award,
   Star,
   Trophy,
+  Eye,
+  Download,
+  Edit,
 } from "lucide-react";
 
 export interface Badge {
@@ -78,24 +79,167 @@ const AlertDialog = ({
   );
 };
 
+// Image View Modal
+const ImageViewModal = ({ 
+  isOpen, 
+  onClose, 
+  badge 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  badge: Badge | null;
+}) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const downloadImage = async () => {
+    if (!badge?.image) return;
+    
+    try {
+      // Fetch the image
+      const response = await fetch(badge.image);
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${badge.title.replace(/\s+/g, '-').toLowerCase()}-badge.${blob.type.split('/')[1] || 'png'}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      
+      // Fallback: try to download via canvas
+      if (imageRef.current) {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = imageRef.current.naturalWidth;
+          canvas.height = imageRef.current.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(imageRef.current, 0, 0);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${badge.title.replace(/\s+/g, '-').toLowerCase()}-badge.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
+            }
+          }, 'image/png');
+        } catch (canvasError) {
+          console.error('Canvas download failed:', canvasError);
+        }
+      }
+    }
+  };
+
+  if (!isOpen || !badge) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-gray-900 rounded-2xl w-full max-w-3xl border border-gray-800 shadow-2xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+          <div>
+            <h3 className="text-xl font-semibold text-white">{badge.title}</h3>
+            {badge.issuer && (
+              <p className="text-sm text-gray-400">{badge.issuer}</p>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {badge.image && (
+              <button
+                onClick={downloadImage}
+                className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+                title="Download Image"
+              >
+                <Download className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 flex items-center justify-center bg-gray-950/50">
+          {badge.image ? (
+            <img
+              ref={imageRef}
+              src={badge.image}
+              alt={badge.title}
+              className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              crossOrigin="anonymous"
+            />
+          ) : (
+            <div className="w-64 h-64 bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center border-2 border-gray-700">
+              <div className="text-center">
+                <Award className="w-20 h-20 text-gray-700 mx-auto mb-4" />
+                <p className="text-gray-500">No image available</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {badge.category && (
+          <div className="p-4 border-t border-gray-800 flex justify-between items-center">
+            <span className="text-sm text-gray-400">Category:</span>
+            <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-500 border border-blue-500/30">
+              {badge.category}
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Modal Component
 const BadgeModal = ({ 
   isOpen, 
   onClose, 
-  onSubmit 
+  onSubmit,
+  initialData,
+  mode = 'add'
 }: { 
   isOpen: boolean; 
   onClose: () => void; 
-  onSubmit: (formData: FormData) => Promise<void>;
+  onSubmit: (formData: FormData, id?: string) => Promise<void>;
+  initialData?: Badge | null;
+  mode?: 'add' | 'edit';
 }) => {
   const [form, setForm] = useState({
-    title: "",
-    issuer: "",
-    category: "",
+    title: initialData?.title || "",
+    issuer: initialData?.issuer || "",
+    category: initialData?.category || "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
+  const [preview, setPreview] = useState<string>(initialData?.image || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        title: initialData.title || "",
+        issuer: initialData.issuer || "",
+        category: initialData.category || "",
+      });
+      setPreview(initialData.image || "");
+    } else {
+      setForm({ title: "", issuer: "", category: "" });
+      setPreview("");
+      setImageFile(null);
+    }
+  }, [initialData, isOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -121,12 +265,9 @@ const BadgeModal = ({
       formData.append("image", imageFile);
     }
 
-    await onSubmit(formData);
+    await onSubmit(formData, initialData?._id);
     setIsSubmitting(false);
     onClose();
-    setForm({ title: "", issuer: "", category: "" });
-    setImageFile(null);
-    setPreview("");
   };
 
   if (!isOpen) return null;
@@ -137,7 +278,7 @@ const BadgeModal = ({
       <div className="relative bg-gray-900 rounded-2xl w-full max-w-2xl border border-gray-800 shadow-2xl">
         <div className="flex items-center justify-between p-6 border-b border-gray-800">
           <h2 className="text-2xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
-            Add New Badge
+            {mode === 'add' ? 'Add New Badge' : 'Edit Badge'}
           </h2>
           <button
             onClick={onClose}
@@ -261,8 +402,8 @@ const BadgeModal = ({
               disabled={isSubmitting}
               className="px-6 py-3 rounded-xl bg-linear-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {isSubmitting ? "Adding..." : "Add Badge"}
-              {!isSubmitting && <Plus className="w-5 h-5" />}
+              {isSubmitting ? "Saving..." : mode === 'add' ? "Add Badge" : "Update Badge"}
+              {!isSubmitting && (mode === 'add' ? <Plus className="w-5 h-5" /> : <Edit className="w-5 h-5" />)}
             </button>
           </div>
         </form>
@@ -275,13 +416,13 @@ const BadgeModal = ({
 const BadgeCard = ({ 
   badge, 
   onDelete,
-  isExpanded,
-  onToggle 
+  onEdit,
+  onViewImage,
 }: { 
   badge: Badge; 
   onDelete: (id: string, title: string) => void;
-  isExpanded: boolean;
-  onToggle: () => void;
+  onEdit: (badge: Badge) => void;
+  onViewImage: (badge: Badge) => void;
 }) => {
   const getCategoryColor = (category?: string) => {
     const colors: Record<string, string> = {
@@ -300,71 +441,65 @@ const BadgeCard = ({
 
   return (
     <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all group">
-      <div className="p-4 cursor-pointer" onClick={onToggle}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 flex-1">
+      <div className="p-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => onViewImage(badge)}
+            className="relative flex-shrink-0"
+          >
             {badge.image ? (
               <img
                 src={badge.image}
                 alt={badge.title}
-                className="w-16 h-16 object-cover rounded-lg border border-gray-700"
+                className="w-16 h-16 object-cover rounded-lg border border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
               />
             ) : (
-              <div className="w-16 h-16 bg-linear-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center border border-gray-600">
+              <div className="w-16 h-16 bg-linear-to-br from-gray-700 to-gray-800 rounded-lg flex items-center justify-center border border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors">
                 <Award className="w-8 h-8 text-gray-600" />
               </div>
             )}
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
-                {badge.title}
-              </h3>
-              <p className="text-gray-400 text-sm">{badge.issuer}</p>
-              {badge.category && (
-                <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(badge.category)}`}>
-                  {badge.category}
-                </span>
-              )}
+            <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Eye className="w-5 h-5 text-white" />
             </div>
+          </button>
+          
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+              {badge.title}
+            </h3>
+            <p className="text-gray-400 text-sm">{badge.issuer || "No issuer specified"}</p>
+            {badge.category && (
+              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium border ${getCategoryColor(badge.category)}`}>
+                {badge.category}
+              </span>
+            )}
           </div>
+
           <div className="flex items-center gap-2">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(badge._id, badge.title);
-              }}
+              onClick={() => onViewImage(badge)}
+              className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+              title="View Image"
+            >
+              <Eye className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onEdit(badge)}
+              className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors text-yellow-500 hover:text-yellow-400"
+              title="Edit Badge"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onDelete(badge._id, badge.title)}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
+              title="Delete Badge"
             >
               <Trash2 className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
-              {isExpanded ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
             </button>
           </div>
         </div>
       </div>
-
-      {isExpanded && (
-        <div className="px-4 pb-4 pt-2 border-t border-gray-700">
-          <div className="ml-20">
-            <div className="bg-gray-700/30 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-400 mb-2">Badge Details</h4>
-              <p className="text-gray-300 text-sm mb-2">
-                <span className="text-gray-500">ID:</span> {badge._id}
-              </p>
-              {badge.createdAt && (
-                <p className="text-gray-300 text-sm">
-                  <span className="text-gray-500">Added:</span>{" "}
-                  {new Date(badge.createdAt).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -374,8 +509,10 @@ export default function BadgeAdmin() {
   const [filteredBadges, setFilteredBadges] = useState<Badge[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isImageViewModalOpen, setIsImageViewModalOpen] = useState(false);
+  const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
+  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [alertConfig, setAlertConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -412,7 +549,6 @@ export default function BadgeAdmin() {
   useEffect(() => {
     let filtered = badges;
 
-    // Apply search
     if (searchTerm) {
       filtered = filtered.filter(
         (badge) =>
@@ -422,7 +558,6 @@ export default function BadgeAdmin() {
       );
     }
 
-    // Apply category filter
     if (selectedCategory !== "all") {
       filtered = filtered.filter((badge) => badge.category === selectedCategory);
     }
@@ -444,6 +579,21 @@ export default function BadgeAdmin() {
     }
   };
 
+  // Handle edit badge
+  const handleEditBadge = async (formData: FormData, id?: string) => {
+    if (!id) return;
+    try {
+      await API.put(`/badges/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      await fetchBadges();
+    } catch (error) {
+      console.error("Error updating badge:", error);
+    }
+  };
+
   // Handle delete with confirmation
   const confirmDelete = (id: string, title: string) => {
     setAlertConfig({
@@ -454,7 +604,6 @@ export default function BadgeAdmin() {
         try {
           await API.delete(`/badges/${id}`);
           await fetchBadges();
-          // Show success alert
           setAlertConfig({
             isOpen: true,
             title: "Badge Deleted",
@@ -466,6 +615,19 @@ export default function BadgeAdmin() {
         }
       },
     });
+  };
+
+  // Handle edit click
+  const handleEditClick = (badge: Badge) => {
+    setSelectedBadge(badge);
+    setFormMode('edit');
+    setIsFormModalOpen(true);
+  };
+
+  // Handle view image
+  const handleViewImage = (badge: Badge) => {
+    setSelectedBadge(badge);
+    setIsImageViewModalOpen(true);
   };
 
   // Get unique categories
@@ -482,16 +644,31 @@ export default function BadgeAdmin() {
         message={alertConfig.message}
       />
 
-      {/* Add Badge Modal */}
+      {/* Badge Form Modal */}
       <BadgeModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddBadge}
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false);
+          setSelectedBadge(null);
+        }}
+        onSubmit={formMode === 'add' ? handleAddBadge : handleEditBadge}
+        initialData={selectedBadge}
+        mode={formMode}
+      />
+
+      {/* Image View Modal */}
+      <ImageViewModal
+        isOpen={isImageViewModalOpen}
+        onClose={() => {
+          setIsImageViewModalOpen(false);
+          setSelectedBadge(null);
+        }}
+        badge={selectedBadge}
       />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Header with decorative elements */}
+        {/* Header */}
         <div className="relative mb-8">
           <div className="absolute -top-6 -left-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl"></div>
           <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-yellow-500/10 rounded-full blur-2xl"></div>
@@ -569,7 +746,11 @@ export default function BadgeAdmin() {
 
               {/* Add Button */}
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setFormMode('add');
+                  setSelectedBadge(null);
+                  setIsFormModalOpen(true);
+                }}
                 className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 flex items-center gap-2 whitespace-nowrap"
               >
                 <Plus className="w-5 h-5" />
@@ -632,7 +813,7 @@ export default function BadgeAdmin() {
           </div>
         </div>
 
-        {/* Badges List/Grid */}
+        {/* Badges Display */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <div className="relative">
@@ -656,7 +837,11 @@ export default function BadgeAdmin() {
             </p>
             {!searchTerm && selectedCategory === "all" && (
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setFormMode('add');
+                  setSelectedBadge(null);
+                  setIsFormModalOpen(true);
+                }}
                 className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium inline-flex items-center gap-2 shadow-lg shadow-blue-500/20"
               >
                 <Plus className="w-5 h-5" />
@@ -669,7 +854,10 @@ export default function BadgeAdmin() {
             {filteredBadges.map((badge) => (
               <div key={badge._id} className="group">
                 <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all hover:shadow-xl hover:shadow-blue-500/5">
-                  <div className="aspect-square bg-linear-to-br from-gray-800 to-gray-900 relative">
+                  <div 
+                    className="aspect-square bg-linear-to-br from-gray-800 to-gray-900 relative cursor-pointer"
+                    onClick={() => handleViewImage(badge)}
+                  >
                     {badge.image ? (
                       <img
                         src={badge.image}
@@ -685,8 +873,10 @@ export default function BadgeAdmin() {
                       </div>
                     )}
                     
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-linear-to-t from-gray-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Eye className="w-8 h-8 text-white" />
+                    </div>
                   </div>
                   
                   <div className="p-5">
@@ -701,12 +891,29 @@ export default function BadgeAdmin() {
                           {badge.category}
                         </span>
                       )}
-                      <button
-                        onClick={() => confirmDelete(badge._id, badge.title)}
-                        className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400 ml-auto"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => handleViewImage(badge)}
+                          className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+                          title="View Image"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleEditClick(badge)}
+                          className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors text-yellow-500 hover:text-yellow-400"
+                          title="Edit Badge"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(badge._id, badge.title)}
+                          className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
+                          title="Delete Badge"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -720,8 +927,8 @@ export default function BadgeAdmin() {
                 key={badge._id}
                 badge={badge}
                 onDelete={confirmDelete}
-                isExpanded={expandedId === badge._id}
-                onToggle={() => setExpandedId(expandedId === badge._id ? null : badge._id)}
+                onEdit={handleEditClick}
+                onViewImage={handleViewImage}
               />
             ))}
           </div>

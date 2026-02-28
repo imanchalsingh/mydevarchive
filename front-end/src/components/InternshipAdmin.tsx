@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import API from "../api/axios";
 import {
   Search,
@@ -20,6 +20,9 @@ import {
   XCircle,
   Clock3,
   Wifi,
+  Eye,
+  Download,
+  Edit,
 } from "lucide-react";
 
 export interface Internship {
@@ -88,28 +91,194 @@ const AlertDialog = ({
   );
 };
 
+// Image View Modal
+const ImageViewModal = ({ 
+  isOpen, 
+  onClose, 
+  internship 
+}: { 
+  isOpen: boolean; 
+  onClose: () => void; 
+  internship: Internship | null;
+}) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const downloadImage = async () => {
+    if (!internship?.image) return;
+    
+    try {
+      // Fetch the image
+      const response = await fetch(internship.image);
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${internship.company.replace(/\s+/g, '-').toLowerCase()}-${internship.role.replace(/\s+/g, '-').toLowerCase()}.${blob.type.split('/')[1] || 'png'}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      
+      // Fallback: try to download via canvas
+      if (imageRef.current) {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = imageRef.current.naturalWidth;
+          canvas.height = imageRef.current.naturalHeight;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(imageRef.current, 0, 0);
+          
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${internship.company.replace(/\s+/g, '-').toLowerCase()}-${internship.role.replace(/\s+/g, '-').toLowerCase()}.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
+            }
+          }, 'image/png');
+        } catch (canvasError) {
+          console.error('Canvas download failed:', canvasError);
+        }
+      }
+    }
+  };
+
+  if (!isOpen || !internship) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative bg-gray-900 rounded-2xl w-full max-w-3xl border border-gray-800 shadow-2xl">
+        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+          <div>
+            <h3 className="text-xl font-semibold text-white">{internship.role}</h3>
+            <p className="text-sm text-gray-400">{internship.company}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            {internship.image && (
+              <button
+                onClick={downloadImage}
+                className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+                title="Download Image"
+              >
+                <Download className="w-5 h-5" />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5 text-gray-400" />
+            </button>
+          </div>
+        </div>
+
+        <div className="p-6 flex items-center justify-center bg-gray-950/50">
+          {internship.image ? (
+            <img
+              ref={imageRef}
+              src={internship.image}
+              alt={internship.company}
+              className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              crossOrigin="anonymous"
+            />
+          ) : (
+            <div className="w-64 h-64 bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center border-2 border-gray-700">
+              <div className="text-center">
+                <Building className="w-20 h-20 text-gray-700 mx-auto mb-4" />
+                <p className="text-gray-500">No image available</p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="p-4 border-t border-gray-800 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            {internship.status && (
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                internship.status === "Active" ? "bg-green-500/20 text-green-400" :
+                internship.status === "Completed" ? "bg-blue-500/20 text-blue-400" :
+                internship.status === "Upcoming" ? "bg-yellow-500/20 text-yellow-400" :
+                "bg-orange-500/20 text-orange-400"
+              }`}>
+                {internship.status}
+              </span>
+            )}
+            {internship.mode && (
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                internship.mode === "Remote" ? "bg-purple-500/20 text-purple-400" :
+                internship.mode === "On-site" ? "bg-blue-500/20 text-blue-400" :
+                "bg-cyan-500/20 text-cyan-400"
+              }`}>
+                {internship.mode}
+              </span>
+            )}
+          </div>
+          {internship.duration && (
+            <span className="text-sm text-gray-400 flex items-center gap-1">
+              <Calendar className="w-4 h-4" />
+              {internship.duration}
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Modal Component
 const InternshipModal = ({
   isOpen,
   onClose,
   onSubmit,
+  initialData,
+  mode = 'add'
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (formData: FormData) => Promise<void>;
+  onSubmit: (formData: FormData, id?: string) => Promise<void>;
+  initialData?: Internship | null;
+  mode?: 'add' | 'edit';
 }) => {
   const [form, setForm] = useState({
-    company: "",
-    role: "",
-    duration: "",
-    mode: "",
-    status: "",
+    company: initialData?.company || "",
+    role: initialData?.role || "",
+    duration: initialData?.duration || "",
+    mode: initialData?.mode || "",
+    status: initialData?.status || "",
   });
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string[]>(initialData?.skills || []);
   const [skillInput, setSkillInput] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>("");
+  const [preview, setPreview] = useState<string>(initialData?.image || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (initialData) {
+      setForm({
+        company: initialData.company || "",
+        role: initialData.role || "",
+        duration: initialData.duration || "",
+        mode: initialData.mode || "",
+        status: initialData.status || "",
+      });
+      setSkills(initialData.skills || []);
+      setPreview(initialData.image || "");
+    } else {
+      setForm({ company: "", role: "", duration: "", mode: "", status: "" });
+      setSkills([]);
+      setPreview("");
+      setImageFile(null);
+    }
+  }, [initialData, isOpen]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -157,13 +326,9 @@ const InternshipModal = ({
       formData.append("image", imageFile);
     }
 
-    await onSubmit(formData);
+    await onSubmit(formData, initialData?._id);
     setIsSubmitting(false);
     onClose();
-    setForm({ company: "", role: "", duration: "", mode: "", status: "" });
-    setSkills([]);
-    setImageFile(null);
-    setPreview("");
   };
 
   if (!isOpen) return null;
@@ -180,7 +345,7 @@ const InternshipModal = ({
       <div className="relative bg-gray-900 rounded-2xl w-full max-w-3xl border border-gray-800 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-gray-800 sticky top-0 bg-gray-900 z-10">
           <h2 className="text-2xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
-            Add New Internship
+            {mode === 'add' ? 'Add New Internship' : 'Edit Internship'}
           </h2>
           <button
             onClick={onClose}
@@ -390,8 +555,8 @@ const InternshipModal = ({
               disabled={isSubmitting}
               className="px-6 py-3 rounded-xl bg-linear-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {isSubmitting ? "Adding..." : "Add Internship"}
-              {!isSubmitting && <Plus className="w-5 h-5" />}
+              {isSubmitting ? "Saving..." : mode === 'add' ? "Add Internship" : "Update Internship"}
+              {!isSubmitting && (mode === 'add' ? <Plus className="w-5 h-5" /> : <Edit className="w-5 h-5" />)}
             </button>
           </div>
         </form>
@@ -499,106 +664,79 @@ const ModeBadge = ({ mode }: { mode: string }) => {
 const InternshipCard = ({
   internship,
   onDelete,
-  isExpanded,
-  onToggle,
+  onEdit,
+  onViewImage,
 }: {
   internship: Internship;
- onDelete: (id: string, title: string) => void;
-  isExpanded: boolean;
-  onToggle: () => void;
+  onDelete: (id: string, title: string) => void;
+  onEdit: (internship: Internship) => void;
+  onViewImage: (internship: Internship) => void;
 }) => {
   return (
     <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all group">
-      <div className="p-4 cursor-pointer" onClick={onToggle}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 flex-1">
+      <div className="p-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => onViewImage(internship)}
+            className="relative flex-shrink-0"
+          >
             {internship.image ? (
               <img
                 src={internship.image}
                 alt={internship.company}
-                className="w-16 h-16 object-cover rounded-lg border border-gray-700"
+                className="w-16 h-16 object-cover rounded-lg border border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
               />
             ) : (
-              <div className="w-16 h-16 bg-linear-to-br from-blue-500/10 to-yellow-500/10 rounded-lg flex items-center justify-center border border-gray-700">
+              <div className="w-16 h-16 bg-linear-to-br from-blue-500/10 to-yellow-500/10 rounded-lg flex items-center justify-center border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors">
                 <Briefcase className="w-8 h-8 text-gray-600" />
               </div>
             )}
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
-                {internship.role}
-              </h3>
-              <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
-                <Building className="w-4 h-4" />
-                <span>{internship.company}</span>
-              </div>
-              <div className="flex items-center gap-3 mt-2">
-                {internship.status && (
-                  <StatusBadge status={internship.status} />
-                )}
-                {internship.mode && <ModeBadge mode={internship.mode} />}
-              </div>
+            <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Eye className="w-5 h-5 text-white" />
+            </div>
+          </button>
+          
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+              {internship.role}
+            </h3>
+            <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
+              <Building className="w-4 h-4" />
+              <span>{internship.company}</span>
+            </div>
+            <div className="flex items-center gap-3 mt-2">
+              {internship.status && (
+                <StatusBadge status={internship.status} />
+              )}
+              {internship.mode && <ModeBadge mode={internship.mode} />}
             </div>
           </div>
+
           <div className="flex items-center gap-2">
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(internship._id,internship.role);
-              }}
+              onClick={() => onViewImage(internship)}
+              className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+              title="View Image"
+            >
+              <Eye className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onEdit(internship)}
+              className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors text-yellow-500 hover:text-yellow-400"
+              title="Edit Internship"
+            >
+              <Edit className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => onDelete(internship._id, internship.role)}
               className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
+              title="Delete Internship"
             >
               <Trash2 className="w-5 h-5" />
-            </button>
-            <button className="p-2 hover:bg-gray-700 rounded-lg transition-colors">
-              {isExpanded ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
             </button>
           </div>
         </div>
       </div>
-
-      {isExpanded && (
-        <div className="px-4 pb-4 pt-2 border-t border-gray-700">
-          <div className="ml-20 space-y-3">
-            {/* Duration */}
-            {internship.duration && (
-              <div className="flex items-center gap-2 text-sm text-gray-400 bg-gray-700/30 rounded-lg p-3">
-                <Calendar className="w-4 h-4 text-blue-400" />
-                <span>Duration: {internship.duration}</span>
-              </div>
-            )}
-
-            {/* Skills */}
-            {internship.skills && internship.skills.length > 0 && (
-              <div className="bg-gray-700/30 rounded-lg p-3">
-                <h4 className="text-sm font-medium text-gray-300 mb-2 flex items-center gap-2">
-                  <span className="w-1 h-4 bg-yellow-400 rounded-full"></span>
-                  Skills
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {internship.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs border border-blue-500/30"
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Created At */}
-            <div className="text-xs text-gray-600 bg-gray-700/30 rounded-lg p-3 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Added: {new Date(internship.createdAt).toLocaleDateString()}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -611,8 +749,10 @@ export default function InternshipAdmin() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [modeFilter, setModeFilter] = useState<string>("all");
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [isImageViewModalOpen, setIsImageViewModalOpen] = useState(false);
+  const [selectedInternship, setSelectedInternship] = useState<Internship | null>(null);
+  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [alertConfig, setAlertConfig] = useState<{
     isOpen: boolean;
     title: string;
@@ -692,6 +832,21 @@ export default function InternshipAdmin() {
     }
   };
 
+  // Handle edit internship
+  const handleEditInternship = async (formData: FormData, id?: string) => {
+    if (!id) return;
+    try {
+      await API.put(`/internships/${id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      await fetchInternships();
+    } catch (error) {
+      console.error("Error updating internship:", error);
+    }
+  };
+
   // Handle delete with confirmation
   const confirmDelete = (id: string, role: string) => {
     setAlertConfig({
@@ -716,6 +871,19 @@ export default function InternshipAdmin() {
     });
   };
 
+  // Handle edit click
+  const handleEditClick = (internship: Internship) => {
+    setSelectedInternship(internship);
+    setFormMode('edit');
+    setIsFormModalOpen(true);
+  };
+
+  // Handle view image
+  const handleViewImage = (internship: Internship) => {
+    setSelectedInternship(internship);
+    setIsImageViewModalOpen(true);
+  };
+
   // Get unique statuses and modes for filters
   const uniqueStatuses = [
     "all",
@@ -737,11 +905,26 @@ export default function InternshipAdmin() {
         message={alertConfig.message}
       />
 
-      {/* Add Internship Modal */}
+      {/* Internship Form Modal */}
       <InternshipModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddInternship}
+        isOpen={isFormModalOpen}
+        onClose={() => {
+          setIsFormModalOpen(false);
+          setSelectedInternship(null);
+        }}
+        onSubmit={formMode === 'add' ? handleAddInternship : handleEditInternship}
+        initialData={selectedInternship}
+        mode={formMode}
+      />
+
+      {/* Image View Modal */}
+      <ImageViewModal
+        isOpen={isImageViewModalOpen}
+        onClose={() => {
+          setIsImageViewModalOpen(false);
+          setSelectedInternship(null);
+        }}
+        internship={selectedInternship}
       />
 
       {/* Main Content */}
@@ -842,7 +1025,11 @@ export default function InternshipAdmin() {
 
               {/* Add Button */}
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setFormMode('add');
+                  setSelectedInternship(null);
+                  setIsFormModalOpen(true);
+                }}
                 className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 flex items-center gap-2 whitespace-nowrap"
               >
                 <Plus className="w-5 h-5" />
@@ -937,7 +1124,11 @@ export default function InternshipAdmin() {
             </p>
             {!searchTerm && statusFilter === "all" && modeFilter === "all" && (
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setFormMode('add');
+                  setSelectedInternship(null);
+                  setIsFormModalOpen(true);
+                }}
                 className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium inline-flex items-center gap-2 shadow-lg shadow-blue-500/20"
               >
                 <Plus className="w-5 h-5" />
@@ -950,7 +1141,10 @@ export default function InternshipAdmin() {
             {filteredInternships.map((internship) => (
               <div key={internship._id} className="group">
                 <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all hover:shadow-xl hover:shadow-blue-500/5 h-full flex flex-col">
-                  <div className="aspect-video bg-linear-to-br from-gray-800 to-gray-900 relative">
+                  <div 
+                    className="aspect-video bg-linear-to-br from-gray-800 to-gray-900 relative cursor-pointer"
+                    onClick={() => handleViewImage(internship)}
+                  >
                     {internship.image ? (
                       <img
                         src={internship.image}
@@ -968,8 +1162,10 @@ export default function InternshipAdmin() {
                       </div>
                     )}
 
-                    {/* Overlay on hover */}
-                    <div className="absolute inset-0 bg-linear-to-t from-gray-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Eye className="w-8 h-8 text-white" />
+                    </div>
                   </div>
 
                   <div className="p-5 flex-1 flex flex-col">
@@ -985,7 +1181,7 @@ export default function InternshipAdmin() {
 
                       {internship.duration && (
                         <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Calendar className="w-4 h-4 hrink-0" />
+                          <Calendar className="w-4 h-4 shrink-0" />
                           <span>{internship.duration}</span>
                         </div>
                       )}
@@ -1016,15 +1212,29 @@ export default function InternshipAdmin() {
                       </div>
                     )}
 
-                    <button
-                      onClick={() =>
-                        confirmDelete(internship._id, internship.role)
-                      }
-                      className="mt-auto w-full px-4 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </button>
+                    <div className="flex gap-2 mt-auto">
+                      <button
+                        onClick={() => handleViewImage(internship)}
+                        className="flex-1 px-3 py-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Eye className="w-4 h-4" />
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleEditClick(internship)}
+                        className="flex-1 px-3 py-2 bg-yellow-500/10 text-yellow-500 rounded-lg hover:bg-yellow-500/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => confirmDelete(internship._id, internship.role)}
+                        className="flex-1 px-3 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors flex items-center justify-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1037,12 +1247,8 @@ export default function InternshipAdmin() {
                 key={internship._id}
                 internship={internship}
                 onDelete={confirmDelete}
-                isExpanded={expandedId === internship._id}
-                onToggle={() =>
-                  setExpandedId(
-                    expandedId === internship._id ? null : internship._id,
-                  )
-                }
+                onEdit={handleEditClick}
+                onViewImage={handleViewImage}
               />
             ))}
           </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/axios";
-import { useAuth } from "../context/authContext";
+import API from "../../api/axios";
+import { useAuth } from "../../context/authContext";
 import {
   Mail,
   Lock,

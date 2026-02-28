@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../context/authContext";
-import BadgeAdmin from "../components/BadgeAdmin";
+import BadgeAdmin from "../components/Admin/BadgeAdmin";
 import CertificatesAdmin from "../components/CertificateAdmin";
 import ContributionAdmin from "../components/ContributionAdmin";
 import InternshipAdmin from "../components/InternshipAdmin";
-import ContributionCertAdmin from "../components/ContributionCertAdmin";
+import ContributionCertAdmin from "../components/Admin/ContributionCertAdmin";
 import Dashboard from "../components/Dashboard";
 import {
   Menu,

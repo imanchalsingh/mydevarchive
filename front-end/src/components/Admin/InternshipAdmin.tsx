@@ -5,8 +5,6 @@ import {
   Plus,
   Trash2,
   X,
-  ChevronDown,
-  ChevronUp,
   Upload,
   AlertTriangle,
   Grid,
@@ -678,7 +676,7 @@ const InternshipCard = ({
         <div className="flex items-center gap-4">
           <button
             onClick={() => onViewImage(internship)}
-            className="relative flex-shrink-0"
+            className="relative shrink-0"
           >
             {internship.image ? (
               <img

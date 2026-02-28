@@ -220,26 +220,28 @@ const CertificateFormModal = ({
   mode?: 'add' | 'edit';
 }) => {
   const [form, setForm] = useState({
-    title: initialData?.title || "",
-    issuer: initialData?.issuer || "",
-    category: initialData?.category || "",
+    title: "",
+    issuer: "",
+    category: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string>(initialData?.image || "");
+  const [preview, setPreview] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (initialData) {
-      setForm({
-        title: initialData.title || "",
-        issuer: initialData.issuer || "",
-        category: initialData.category || "",
-      });
-      setPreview(initialData.image || "");
-    } else {
-      setForm({ title: "", issuer: "", category: "" });
-      setPreview("");
-      setImageFile(null);
+    if (isOpen) {
+      if (initialData) {
+        setForm({
+          title: initialData.title || "",
+          issuer: initialData.issuer || "",
+          category: initialData.category || "",
+        });
+        setPreview(initialData.image || "");
+      } else {
+        setForm({ title: "", issuer: "", category: "" });
+        setPreview("");
+        setImageFile(null);
+      }
     }
   }, [initialData, isOpen]);
 
@@ -446,7 +448,7 @@ const CertificateCard = ({
         <div className="flex items-center gap-4">
           <button
             onClick={() => onViewImage(cert)}
-            className="relative flex-shrink-0"
+            className="relative shrink-0"
           >
             {cert.image ? (
               <img

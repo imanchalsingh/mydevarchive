@@ -562,7 +562,7 @@ const ContributionCard = ({
         <div className="flex items-center gap-4">
           <button
             onClick={() => onViewImage(contribution)}
-            className="relative flex-shrink-0"
+            className="relative shrink-0"
           >
             {contribution.image ? (
               <img

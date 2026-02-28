@@ -396,7 +396,7 @@ const BadgeCard = ({
       <div className="flex items-center gap-3">
         <button
           onClick={() => onViewImage(badge)}
-          className="flex-shrink-0"
+          className="shrink-0"
         >
           {badge.image ? (
             <img

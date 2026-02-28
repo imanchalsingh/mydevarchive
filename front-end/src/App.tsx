@@ -3,13 +3,15 @@ import Login from "./components/LoginPage";
 import Dashboard from "./pages/MyDevArchive";
 import ProtectedRoute from "./routes/protectedRoute";
 import { AuthProvider } from "./context/authContext";
+import UserDashboard from "./components/UserDashboard";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<UserDashboard/>} />
+          <Route path="/admin" element={<Login />} />
           <Route
             path="/dashboard"
             element={

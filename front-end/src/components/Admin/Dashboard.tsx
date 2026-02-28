@@ -23,7 +23,7 @@ import {
   NotebookText,
   LucideGitGraph,
 } from "lucide-react";
-import API from "../api/axios";
+import API from "../../api/axios";
 import {
   Chart as ChartJS,
   CategoryScale,

@@ -24,12 +24,30 @@ router.post("/", protect, upload.single("image"), async (req, res) => {
 });
 
 // UPDATE
-router.put("/:id", protect, async (req, res) => {
-  const updated = await Certificate.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
-  res.json(updated);
-});
+router.put(
+  "/:id",
+  protect,
+  upload.single("image"),
+  async (req, res) => {
+    const updateData = {
+      title: req.body.title,
+      issuer: req.body.issuer,
+      category: req.body.category,
+    };
+
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
+    const updated = await Badge.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json(updated);
+  }
+);
 
 // DELETE
 router.delete("/:id", protect, async (req, res) => {

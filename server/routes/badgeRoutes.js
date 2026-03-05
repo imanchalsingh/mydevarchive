@@ -36,7 +36,7 @@ router.put(
   async (req, res) => {
     const updateData = {
       title: req.body.title,
-      issuer: req.body.platform,
+      issuer: req.body.issuer,
       category: req.body.category,
     };
 

@@ -20,11 +20,11 @@ router.post(
     const internship = await Internship.create({
       company: req.body.company,
       role: req.body.role,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      certificateURL: req.body.certificateURL,
-      description: req.body.description,
+      duration: req.body.duration,
+      mode: req.body.mode,
+      status: req.body.status,
       image: req.file ? req.file.path : "",
+      skills: req.body.skills ? req.body.skills.split(",").map(s => s.trim()) : [],
     });
 
     res.status(201).json(internship);
@@ -40,10 +40,10 @@ router.put(
     const updateData = {
       company: req.body.company,
       role: req.body.role,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      certificateURL: req.body.certificateURL,
-      description: req.body.description,
+      duration: req.body.duration,
+      mode: req.body.mode,
+      status: req.body.status,
+      skills: req.body.skills ? req.body.skills.split(",").map(s => s.trim()) : [],
     };
 
     if (req.file) {

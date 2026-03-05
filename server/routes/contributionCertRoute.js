@@ -18,13 +18,12 @@ router.post(
   upload.single("image"),
   async (req, res) => {
     const contribution = await ContributionCert.create({
-      title: req.body.title,
+      name: req.body.name,
       type: req.body.type,
-      referenceId: req.body.referenceId,
-      description: req.body.description,
       image: req.file ? req.file.path : "",
       role: req.body.role,
       event: req.body.event,
+      issuer: req.body.issuer,
     });
 
     res.status(201).json(contribution);
@@ -38,10 +37,9 @@ router.put(
   upload.single("image"),
   async (req, res) => {
     const updateData = {
-      title: req.body.title,
+      name: req.body.name,
       type: req.body.type,
-      referenceId: req.body.referenceId,
-      description: req.body.description,
+      issuer: req.body.issuer,
       role: req.body.role,
       event: req.body.event,
     };

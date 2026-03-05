@@ -23,6 +23,8 @@ router.post(
       referenceId: req.body.referenceId,
       description: req.body.description,
       image: req.file ? req.file.path : "",
+      event: req.body.event,
+      role: req.body.role,
     });
 
     res.status(201).json(contribution);
@@ -40,6 +42,8 @@ router.put(
       type: req.body.type,
       referenceId: req.body.referenceId,
       description: req.body.description,
+      event: req.body.event,
+      role: req.body.role,
     };
 
     if (req.file) {

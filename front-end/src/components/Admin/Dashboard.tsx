@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BarChart2,
   Award,
-  TrendingUp,
   RefreshCw,
   PieChart,
   Activity,
@@ -79,6 +78,8 @@ interface Internship {
 }
 
 interface DashboardStats {
+  totalContributions?: number;
+  totalContributionsCert?: number;
   totalCertificates: number;
   totalBadges: number;
   totalInternships: number;
@@ -97,47 +98,6 @@ interface DashboardStats {
     };
   };
 }
-
-// Stat Card Component
-const StatCard = ({
-  title,
-  value,
-  icon: Icon,
-  color,
-  trend,
-  bgColor,
-}: {
-  title: string;
-  value: number | string;
-  icon: React.ElementType;
-  color: string;
-  trend?: { value: number; isPositive: boolean };
-  bgColor: string;
-}) => (
-  <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700 hover:border-blue-500/50 transition-all group">
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="text-gray-400 text-sm mb-1">{title}</p>
-        <h3 className="text-3xl font-bold text-white">{value}</h3>
-        {trend && (
-          <p
-            className={`text-sm mt-2 flex items-center gap-1 ${trend.isPositive ? "text-green-400" : "text-red-400"}`}
-          >
-            <TrendingUp
-              className={`w-4 h-4 ${!trend.isPositive && "rotate-180"}`}
-            />
-            {trend.value}% from last month
-          </p>
-        )}
-      </div>
-      <div
-        className={`p-4 rounded-xl ${bgColor} group-hover:scale-110 transition-transform`}
-      >
-        <Icon className={`w-6 h-6 ${color}`} />
-      </div>
-    </div>
-  </div>
-);
 
 // Category Chart Component
 const CategoryChart = ({ data }: { data: { [key: string]: number } }) => {
@@ -231,6 +191,23 @@ const TimelineChart = ({ data }: { data: { [key: string]: any } }) => {
         fill: true,
       },
       {
+        label: "Contributions",
+        data: months.map((m) => data[m]?.contributions || 0),
+        borderColor: "#10B981",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
+        tension: 0.4,
+        fill: true,
+      },
+
+      {
+        label: "Contributions Certificates",
+        data: months.map((m) => data[m]?.totalContributionsCert || 0),
+        borderColor: "#10B981",
+        backgroundColor: "rgba(16, 185, 129, 0.1)",
+        tension: 0.4,
+        fill: true,
+      },
+      {
         label: "Internships",
         data: months.map((m) => data[m]?.internships || 0),
         borderColor: "#A855F7",
@@ -238,6 +215,7 @@ const TimelineChart = ({ data }: { data: { [key: string]: any } }) => {
         tension: 0.4,
         fill: true,
       },
+
     ],
   };
 
@@ -431,7 +409,6 @@ const Dashboard = () => {
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [internships, setInternships] = useState<Internship[]>([]);
-  const [timeRange, setTimeRange] = useState("all");
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = async () => {
@@ -587,16 +564,6 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-4 md:mt-0">
-            <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className="px-4 py-2 bg-gray-800 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500"
-            >
-              <option value="all">All Time</option>
-              <option value="year">This Year</option>
-              <option value="month">This Month</option>
-              <option value="week">This Week</option>
-            </select>
 
             <button
               onClick={handleRefresh}
@@ -610,58 +577,10 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard
-            title="Total Items"
-            value={stats.totalItems}
-            icon={Layers}
-            color="text-blue-400"
-            bgColor="bg-blue-500/20"
-            trend={{ value: 12, isPositive: true }}
-          />
-          <StatCard
-            title="Certificates"
-            value={stats.totalCertificates}
-            icon={NotebookText}
-            color="text-yellow-400"
-            bgColor="bg-yellow-500/20"
-          />
-          <StatCard
-            title="Badges"
-            value={stats.totalBadges}
-            icon={Award}
-            color="text-purple-400"
-            bgColor="bg-purple-500/20"
-          />
-          <StatCard
-            title="Internships"
-            value={stats.totalInternships}
-            icon={Briefcase}
-            color="text-green-400"
-            bgColor="bg-green-500/20"
-          />
-        </div>
-
-        {/* Category Distribution and Timeline */}
+        {/* Category Distribution and Issuer Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <CategoryChart data={stats.categories} />
-          <TimelineChart data={stats.timeline} />
-        </div>
-
-        {/* Issuer Chart and Recent Items */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <div className="lg:col-span-1">
-            <IssuerChart data={stats.issuers} />
-          </div>
-
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <RecentItems items={certificates} type="certificates" />
-              <RecentItems items={badges} type="badges" />
-              <RecentItems items={internships} type="internships" />
-            </div>
-          </div>
+          <IssuerChart data={stats.issuers} />
         </div>
 
         {/* Category Breakdown */}
@@ -708,8 +627,8 @@ const Dashboard = () => {
                     "mobile",
                     "ai-ml",
                   ].includes(category) && (
-                    <BookOpen className="w-5 h-5 text-gray-400" />
-                  )}
+                      <BookOpen className="w-5 h-5 text-gray-400" />
+                    )}
                   <span className="text-white font-medium capitalize">
                     {category}
                   </span>
@@ -742,7 +661,7 @@ const Dashboard = () => {
             <p className="text-2xl font-bold text-white">
               {Math.round(
                 stats.totalItems /
-                  Math.max(1, Object.keys(stats.timeline).length),
+                Math.max(1, Object.keys(stats.timeline).length),
               )}
             </p>
           </div>

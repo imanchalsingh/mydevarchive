@@ -16,6 +16,7 @@ router.post("/", protect, upload.single("image"), async (req, res) => {
   const certificate = await Certificate.create({
     title: req.body.title,
     issuer: req.body.issuer,
+    category: req.body.category,
     image: req.file ? req.file.path : "",
   });
 

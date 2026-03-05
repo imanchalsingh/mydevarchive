@@ -4,11 +4,8 @@ import {
   Award,
   RefreshCw,
   PieChart,
-  Activity,
-  Star,
   Zap,
   BookOpen,
-  Briefcase,
   Code,
   Cloud,
   Database,
@@ -16,10 +13,6 @@ import {
   Smartphone,
   Cpu,
   Globe,
-  Layers,
-  ChevronRight,
-  MoreVertical,
-  NotebookText,
   LucideGitGraph,
 } from "lucide-react";
 import API from "../../api/axios";
@@ -36,7 +29,7 @@ import {
   LineElement,
   Filler,
 } from "chart.js";
-import { Bar, Line, Doughnut } from "react-chartjs-2";
+import { Bar, Doughnut } from "react-chartjs-2";
 
 // Register ChartJS components
 ChartJS.register(
@@ -162,98 +155,6 @@ const CategoryChart = ({ data }: { data: { [key: string]: number } }) => {
   );
 };
 
-// Timeline Chart Component
-const TimelineChart = ({ data }: { data: { [key: string]: any } }) => {
-  const months = Object.keys(data).sort();
-
-  const chartData = {
-    labels: months.map((m) =>
-      new Date(m).toLocaleDateString("default", {
-        month: "short",
-        year: "numeric",
-      }),
-    ),
-    datasets: [
-      {
-        label: "Certificates",
-        data: months.map((m) => data[m]?.certificates || 0),
-        borderColor: "#3B82F6",
-        backgroundColor: "rgba(59, 130, 246, 0.1)",
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: "Badges",
-        data: months.map((m) => data[m]?.badges || 0),
-        borderColor: "#EAB308",
-        backgroundColor: "rgba(234, 179, 8, 0.1)",
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: "Contributions",
-        data: months.map((m) => data[m]?.contributions || 0),
-        borderColor: "#10B981",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
-        tension: 0.4,
-        fill: true,
-      },
-
-      {
-        label: "Contributions Certificates",
-        data: months.map((m) => data[m]?.totalContributionsCert || 0),
-        borderColor: "#10B981",
-        backgroundColor: "rgba(16, 185, 129, 0.1)",
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: "Internships",
-        data: months.map((m) => data[m]?.internships || 0),
-        borderColor: "#A855F7",
-        backgroundColor: "rgba(168, 85, 247, 0.1)",
-        tension: 0.4,
-        fill: true,
-      },
-
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        labels: {
-          color: "#9CA3AF",
-          usePointStyle: true,
-          pointStyle: "circle",
-        },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: { color: "rgba(75, 85, 99, 0.2)" },
-        ticks: { color: "#9CA3AF", stepSize: 1 },
-      },
-      x: {
-        grid: { display: false },
-        ticks: { color: "#9CA3AF" },
-      },
-    },
-  };
-
-  return (
-    <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
-      <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-        <Activity className="w-5 h-5 text-yellow-400" />
-        Growth Timeline
-      </h3>
-      <Line data={chartData} options={options} />
-    </div>
-  );
-};
 
 // Issuer Doughnut Chart
 const IssuerChart = ({ data }: { data: { [key: string]: number } }) => {
@@ -301,93 +202,6 @@ const IssuerChart = ({ data }: { data: { [key: string]: number } }) => {
       </h3>
       <div className="h-62.5 flex items-center justify-center">
         <Doughnut data={chartData} options={options} />
-      </div>
-    </div>
-  );
-};
-
-// Recent Items Component
-const RecentItems = ({ items, type }: { items: any[]; type: string }) => {
-  const getIcon = () => {
-    switch (type) {
-      case "certificates":
-        return <NotebookText className="w-4 h-4" />;
-      case "badges":
-        return <Award className="w-4 h-4" />;
-      case "internships":
-        return <Briefcase className="w-4 h-4" />;
-      default:
-        return <Star className="w-4 h-4" />;
-    }
-  };
-
-  const getColor = () => {
-    switch (type) {
-      case "certificates":
-        return "text-blue-400 bg-blue-500/20";
-      case "badges":
-        return "text-yellow-400 bg-yellow-500/20";
-      case "internships":
-        return "text-purple-400 bg-purple-500/20";
-      default:
-        return "text-gray-400 bg-gray-500/20";
-    }
-  };
-
-  return (
-    <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-          <span className={`p-2 rounded-lg ${getColor()}`}>{getIcon()}</span>
-          Recent {type.charAt(0).toUpperCase() + type.slice(1)}
-        </h3>
-        <button className="text-gray-400 hover:text-white transition-colors">
-          <MoreVertical className="w-5 h-5" />
-        </button>
-      </div>
-
-      <div className="space-y-3">
-        {items.slice(0, 5).map((item) => (
-          <div
-            key={item._id}
-            className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-700/30 transition-colors group"
-          >
-            {item.image ? (
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-10 h-10 rounded-lg object-cover"
-              />
-            ) : (
-              <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center ${getColor()}`}
-              >
-                {getIcon()}
-              </div>
-            )}
-            <div className="flex-1 min-w-0">
-              <p className="text-white font-medium truncate group-hover:text-blue-400 transition-colors">
-                {item.title}
-              </p>
-              <p className="text-sm text-gray-400 truncate">
-                {item.issuer || item.company || "No issuer"}
-              </p>
-            </div>
-            {item.category && (
-              <span className="text-xs px-2 py-1 rounded-full bg-gray-700 text-gray-300">
-                {item.category}
-              </span>
-            )}
-          </div>
-        ))}
-
-        {items.length === 0 && (
-          <p className="text-center text-gray-500 py-4">No recent items</p>
-        )}
-
-        <button className="w-full mt-2 text-sm text-blue-400 hover:text-blue-300 transition-colors flex items-center justify-center gap-1 py-2">
-          View all <ChevronRight className="w-4 h-4" />
-        </button>
       </div>
     </div>
   );
@@ -564,7 +378,6 @@ const Dashboard = () => {
           </div>
 
           <div className="flex items-center gap-3 mt-4 md:mt-0">
-
             <button
               onClick={handleRefresh}
               disabled={refreshing}
@@ -578,10 +391,12 @@ const Dashboard = () => {
         </div>
 
         {/* Category Distribution and Issuer Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <CategoryChart data={stats.categories} />
-          <IssuerChart data={stats.issuers} />
-        </div>
+        {certificates || badges || internships ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <CategoryChart data={stats.categories} />
+            <IssuerChart data={stats.issuers} />
+          </div>
+        ) : null}
 
         {/* Category Breakdown */}
         <div className="bg-gray-800/50 rounded-2xl p-6 border border-gray-700">

@@ -19,9 +19,9 @@ router.post(
   async (req, res) => {
     const badge = await Badge.create({
       title: req.body.title,
-      platform: req.body.platform,
-      description: req.body.description,
+      issuer: req.body.issuer,
       image: req.file ? req.file.path : "",
+      category: req.body.category,
     });
 
     res.status(201).json(badge);
@@ -36,8 +36,8 @@ router.put(
   async (req, res) => {
     const updateData = {
       title: req.body.title,
-      platform: req.body.platform,
-      description: req.body.description,
+      issuer: req.body.platform,
+      category: req.body.category,
     };
 
     if (req.file) {

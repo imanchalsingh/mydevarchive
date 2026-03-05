@@ -39,7 +39,7 @@ router.put(
       updateData.image = req.file.path;
     }
 
-    const updated = await Badge.findByIdAndUpdate(
+    const updated = await Certificate.findByIdAndUpdate(
       req.params.id,
       updateData,
       { new: true }

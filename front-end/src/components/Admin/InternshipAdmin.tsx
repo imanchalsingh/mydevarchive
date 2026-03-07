@@ -54,23 +54,23 @@ const AlertDialog = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/50"
         onClick={onClose}
       />
-      <div className="relative bg-gray-900 rounded-2xl w-full max-w-md p-6 border border-gray-800 shadow-2xl">
+      <div className="relative bg-white rounded-lg w-full max-w-md p-6 border border-gray-200 shadow-lg">
         <div className="flex items-center gap-4 mb-4">
-          <div className="p-3 bg-yellow-500/20 rounded-full">
-            <AlertTriangle className="w-6 h-6 text-yellow-500" />
+          <div className="p-3 bg-yellow-100 rounded-full">
+            <AlertTriangle className="w-6 h-6 text-yellow-600" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white">{title}</h3>
-            <p className="text-gray-400 mt-1">{message}</p>
+            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            <p className="text-gray-600 text-sm mt-1">{message}</p>
           </div>
         </div>
         <div className="flex gap-3 justify-end mt-6">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-lg bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors font-medium"
+            className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-medium"
           >
             Cancel
           </button>
@@ -79,7 +79,7 @@ const AlertDialog = ({
               onConfirm();
               onClose();
             }}
-            className="px-4 py-2 rounded-lg bg-linear-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all font-medium shadow-lg shadow-red-500/20"
+            className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors font-medium"
           >
             Delete
           </button>
@@ -105,11 +105,9 @@ const ImageViewModal = ({
     if (!internship?.image) return;
     
     try {
-      // Fetch the image
       const response = await fetch(internship.image);
       const blob = await response.blob();
       
-      // Create download link
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -121,7 +119,6 @@ const ImageViewModal = ({
     } catch (error) {
       console.error('Error downloading image:', error);
       
-      // Fallback: try to download via canvas
       if (imageRef.current) {
         try {
           const canvas = document.createElement('canvas');
@@ -153,18 +150,18 @@ const ImageViewModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-gray-900 rounded-2xl w-full max-w-3xl border border-gray-800 shadow-2xl">
-        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+      <div className="fixed inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative bg-white rounded-lg w-full max-w-3xl border border-gray-200 shadow-lg">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <div>
-            <h3 className="text-xl font-semibold text-white">{internship.role}</h3>
-            <p className="text-sm text-gray-400">{internship.company}</p>
+            <h3 className="text-lg font-semibold text-gray-900">{internship.role}</h3>
+            <p className="text-sm text-gray-600">{internship.company}</p>
           </div>
           <div className="flex items-center gap-2">
             {internship.image && (
               <button
                 onClick={downloadImage}
-                className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-gray-900"
                 title="Download Image"
               >
                 <Download className="w-5 h-5" />
@@ -172,56 +169,56 @@ const ImageViewModal = ({
             )}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-gray-400" />
+              <X className="w-5 h-5 text-gray-500" />
             </button>
           </div>
         </div>
 
-        <div className="p-6 flex items-center justify-center bg-gray-950/50">
+        <div className="p-6 flex items-center justify-center bg-gray-50">
           {internship.image ? (
             <img
               ref={imageRef}
               src={internship.image}
               alt={internship.company}
-              className="max-w-full max-h-[70vh] object-contain rounded-lg"
+              className="max-w-full max-h-[70vh] object-contain rounded"
               crossOrigin="anonymous"
             />
           ) : (
-            <div className="w-64 h-64 bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl flex items-center justify-center border-2 border-gray-700">
+            <div className="w-64 h-64 bg-gray-100 rounded flex items-center justify-center border border-gray-200">
               <div className="text-center">
-                <Building className="w-20 h-20 text-gray-700 mx-auto mb-4" />
+                <Building className="w-20 h-20 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500">No image available</p>
               </div>
             </div>
           )}
         </div>
 
-        <div className="p-4 border-t border-gray-800 flex justify-between items-center">
+        <div className="p-4 border-t border-gray-200 flex justify-between items-center">
           <div className="flex items-center gap-4">
             {internship.status && (
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                internship.status === "Active" ? "bg-green-500/20 text-green-400" :
-                internship.status === "Completed" ? "bg-blue-500/20 text-blue-400" :
-                internship.status === "Upcoming" ? "bg-yellow-500/20 text-yellow-400" :
-                "bg-orange-500/20 text-orange-400"
+                internship.status === "Active" ? "bg-green-100 text-green-700" :
+                internship.status === "Completed" ? "bg-blue-100 text-blue-700" :
+                internship.status === "Upcoming" ? "bg-yellow-100 text-yellow-700" :
+                "bg-orange-100 text-orange-700"
               }`}>
                 {internship.status}
               </span>
             )}
             {internship.mode && (
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                internship.mode === "Remote" ? "bg-purple-500/20 text-purple-400" :
-                internship.mode === "On-site" ? "bg-blue-500/20 text-blue-400" :
-                "bg-cyan-500/20 text-cyan-400"
+                internship.mode === "Remote" ? "bg-purple-100 text-purple-700" :
+                internship.mode === "On-site" ? "bg-blue-100 text-blue-700" :
+                "bg-cyan-100 text-cyan-700"
               }`}>
                 {internship.mode}
               </span>
             )}
           </div>
           {internship.duration && (
-            <span className="text-sm text-gray-400 flex items-center gap-1">
+            <span className="text-sm text-gray-600 flex items-center gap-1">
               <Calendar className="w-4 h-4" />
               {internship.duration}
             </span>
@@ -337,19 +334,19 @@ const InternshipModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+        className="fixed inset-0 bg-black/50"
         onClick={onClose}
       />
-      <div className="relative bg-gray-900 rounded-2xl w-full max-w-3xl border border-gray-800 shadow-2xl max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-800 sticky top-0 bg-gray-900 z-10">
-          <h2 className="text-2xl font-bold bg-linear-to-r from-blue-400 to-yellow-400 bg-clip-text text-transparent">
+      <div className="relative bg-white rounded-lg w-full max-w-3xl border border-gray-200 shadow-lg max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+          <h2 className="text-xl font-semibold text-gray-900">
             {mode === 'add' ? 'Add New Internship' : 'Edit Internship'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
@@ -358,7 +355,7 @@ const InternshipModal = ({
             {/* Left Column */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Company/Organization *
                 </label>
                 <input
@@ -367,28 +364,28 @@ const InternshipModal = ({
                   onChange={(e) =>
                     setForm({ ...form, company: e.target.value })
                   }
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Google, Microsoft, etc."
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Role/Position *
                 </label>
                 <input
                   type="text"
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., Software Engineering Intern"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Duration
                 </label>
                 <input
@@ -397,13 +394,13 @@ const InternshipModal = ({
                   onChange={(e) =>
                     setForm({ ...form, duration: e.target.value })
                   }
-                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="e.g., 3 months, Jan - Mar 2024"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Mode
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -412,10 +409,10 @@ const InternshipModal = ({
                       key={option}
                       type="button"
                       onClick={() => setForm({ ...form, mode: option })}
-                      className={`px-3 py-2 rounded-lg border transition-all ${
+                      className={`px-3 py-2 rounded-lg border text-sm ${
                         form.mode === option
-                          ? "bg-blue-500 border-blue-500 text-white"
-                          : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
+                          ? "bg-blue-600 border-blue-600 text-white"
+                          : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
                       {option}
@@ -428,7 +425,7 @@ const InternshipModal = ({
             {/* Right Column */}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Status
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -437,10 +434,10 @@ const InternshipModal = ({
                       key={option}
                       type="button"
                       onClick={() => setForm({ ...form, status: option })}
-                      className={`px-3 py-2 rounded-lg border transition-all ${
+                      className={`px-3 py-2 rounded-lg border text-sm ${
                         form.status === option
-                          ? "bg-blue-500 border-blue-500 text-white"
-                          : "bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600"
+                          ? "bg-blue-600 border-blue-600 text-white"
+                          : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
                       }`}
                     >
                       {option}
@@ -450,7 +447,7 @@ const InternshipModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Skills (Press Enter to add)
                 </label>
                 <div className="flex gap-2">
@@ -459,13 +456,13 @@ const InternshipModal = ({
                     value={skillInput}
                     onChange={(e) => setSkillInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., React, Node.js, Python"
                   />
                   <button
                     type="button"
                     onClick={handleAddSkill}
-                    className="px-4 py-3 bg-blue-500/20 text-blue-400 rounded-xl hover:bg-blue-500/30 transition-colors border border-blue-500/30"
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors border border-gray-300"
                   >
                     <Plus className="w-5 h-5" />
                   </button>
@@ -477,13 +474,13 @@ const InternshipModal = ({
                     {skills.map((skill) => (
                       <span
                         key={skill}
-                        className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-sm flex items-center gap-1 border border-blue-500/30"
+                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm flex items-center gap-1"
                       >
                         {skill}
                         <button
                           type="button"
                           onClick={() => handleRemoveSkill(skill)}
-                          className="hover:text-red-400 transition-colors"
+                          className="hover:text-red-600 transition-colors"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -494,16 +491,16 @@ const InternshipModal = ({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Company Logo/Image
                 </label>
-                <div className="border-2 border-dashed border-gray-700 rounded-xl p-4 text-center hover:border-blue-500 transition-colors group">
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-blue-500 transition-colors">
                   {preview ? (
                     <div className="relative">
                       <img
                         src={preview}
                         alt="Preview"
-                        className="max-h-48 mx-auto rounded-lg object-cover"
+                        className="max-h-48 mx-auto rounded object-cover"
                       />
                       <button
                         type="button"
@@ -511,7 +508,7 @@ const InternshipModal = ({
                           setImageFile(null);
                           setPreview("");
                         }}
-                        className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
+                        className="absolute top-2 right-2 p-1 bg-red-600 rounded-full text-white hover:bg-red-700 transition-colors"
                       >
                         <X className="w-4 h-4" />
                       </button>
@@ -524,12 +521,12 @@ const InternshipModal = ({
                         onChange={handleFileChange}
                         className="hidden"
                       />
-                      <div className="py-8">
-                        <Upload className="w-12 h-12 text-gray-600 mx-auto mb-3 group-hover:text-blue-500 transition-colors" />
-                        <p className="text-gray-400 group-hover:text-blue-500 transition-colors">
+                      <div className="py-4">
+                        <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-600 text-sm">
                           Click to upload or drag and drop
                         </p>
-                        <p className="text-sm text-gray-600 mt-2">
+                        <p className="text-xs text-gray-500 mt-1">
                           PNG, JPG, GIF up to 10MB
                         </p>
                       </div>
@@ -540,21 +537,21 @@ const InternshipModal = ({
             </div>
           </div>
 
-          <div className="flex gap-3 justify-end mt-8 pt-4 border-t border-gray-800">
+          <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 hover:bg-gray-700 transition-colors font-medium"
+              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 rounded-xl bg-linear-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isSubmitting ? "Saving..." : mode === 'add' ? "Add Internship" : "Update Internship"}
-              {!isSubmitting && (mode === 'add' ? <Plus className="w-5 h-5" /> : <Edit className="w-5 h-5" />)}
+              {!isSubmitting && (mode === 'add' ? <Plus className="w-4 h-4" /> : <Edit className="w-4 h-4" />)}
             </button>
           </div>
         </form>
@@ -566,47 +563,22 @@ const InternshipModal = ({
 // Status Badge Component
 const StatusBadge = ({ status }: { status: string }) => {
   const getStatusConfig = (status: string) => {
-    const configs: Record<
-      string,
-      { color: string; bgColor: string; icon: any }
-    > = {
-      Active: {
-        color: "text-green-400",
-        bgColor: "bg-green-500/20",
-        icon: CheckCircle,
-      },
-      Completed: {
-        color: "text-blue-400",
-        bgColor: "bg-blue-500/20",
-        icon: CheckCircle,
-      },
-      Upcoming: {
-        color: "text-yellow-400",
-        bgColor: "bg-yellow-500/20",
-        icon: Clock3,
-      },
-      "On Hold": {
-        color: "text-orange-400",
-        bgColor: "bg-orange-500/20",
-        icon: XCircle,
-      },
+    const configs: Record<string, { className: string; icon: any }> = {
+      Active: { className: "bg-green-100 text-green-700", icon: CheckCircle },
+      Completed: { className: "bg-blue-100 text-blue-700", icon: CheckCircle },
+      Upcoming: { className: "bg-yellow-100 text-yellow-700", icon: Clock3 },
+      "On Hold": { className: "bg-orange-100 text-orange-700", icon: XCircle },
     };
-    return (
-      configs[status] || {
-        color: "text-gray-400",
-        bgColor: "bg-gray-500/20",
-        icon: Clock,
-      }
-    );
+    const config = configs[status] || { className: "bg-gray-100 text-gray-700", icon: Clock };
+    const Icon = config.icon;
+
+    return { ...config, Icon };
   };
 
-  const config = getStatusConfig(status);
-  const Icon = config.icon;
+  const { className, Icon } = getStatusConfig(status);
 
   return (
-    <span
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}
-    >
+    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${className}`}>
       <Icon className="w-3 h-3" />
       {status}
     </span>
@@ -616,42 +588,21 @@ const StatusBadge = ({ status }: { status: string }) => {
 // Mode Badge Component
 const ModeBadge = ({ mode }: { mode: string }) => {
   const getModeConfig = (mode: string) => {
-    const configs: Record<
-      string,
-      { color: string; bgColor: string; icon: any }
-    > = {
-      Remote: {
-        color: "text-purple-400",
-        bgColor: "bg-purple-500/20",
-        icon: Wifi,
-      },
-      "On-site": {
-        color: "text-blue-400",
-        bgColor: "bg-blue-500/20",
-        icon: Building,
-      },
-      Hybrid: {
-        color: "text-cyan-400",
-        bgColor: "bg-cyan-500/20",
-        icon: MapPin,
-      },
+    const configs: Record<string, { className: string; icon: any }> = {
+      Remote: { className: "bg-purple-100 text-purple-700", icon: Wifi },
+      "On-site": { className: "bg-blue-100 text-blue-700", icon: Building },
+      Hybrid: { className: "bg-cyan-100 text-cyan-700", icon: MapPin },
     };
-    return (
-      configs[mode] || {
-        color: "text-gray-400",
-        bgColor: "bg-gray-500/20",
-        icon: MapPin,
-      }
-    );
+    const config = configs[mode] || { className: "bg-gray-100 text-gray-700", icon: MapPin };
+    const Icon = config.icon;
+
+    return { ...config, Icon };
   };
 
-  const config = getModeConfig(mode);
-  const Icon = config.icon;
+  const { className, Icon } = getModeConfig(mode);
 
   return (
-    <span
-      className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}
-    >
+    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${className}`}>
       <Icon className="w-3 h-3" />
       {mode}
     </span>
@@ -671,7 +622,7 @@ const InternshipCard = ({
   onViewImage: (internship: Internship) => void;
 }) => {
   return (
-    <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all group">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-blue-500 transition-all">
       <div className="p-4">
         <div className="flex items-center gap-4">
           <button
@@ -682,55 +633,50 @@ const InternshipCard = ({
               <img
                 src={internship.image}
                 alt={internship.company}
-                className="w-16 h-16 object-cover rounded-lg border border-gray-700 cursor-pointer hover:opacity-80 transition-opacity"
+                className="w-16 h-16 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
               />
             ) : (
-              <div className="w-16 h-16 bg-linear-to-br from-blue-500/10 to-yellow-500/10 rounded-lg flex items-center justify-center border border-gray-700 cursor-pointer hover:bg-gray-700 transition-colors">
-                <Briefcase className="w-8 h-8 text-gray-600" />
+              <div className="w-16 h-16 bg-gray-100 rounded flex items-center justify-center border border-gray-200 cursor-pointer hover:bg-gray-200 transition-colors">
+                <Briefcase className="w-8 h-8 text-gray-400" />
               </div>
             )}
-            <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              <Eye className="w-5 h-5 text-white" />
-            </div>
           </button>
           
           <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+            <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors">
               {internship.role}
             </h3>
-            <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
+            <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
               <Building className="w-4 h-4" />
               <span>{internship.company}</span>
             </div>
-            <div className="flex items-center gap-3 mt-2">
-              {internship.status && (
-                <StatusBadge status={internship.status} />
-              )}
+            <div className="flex items-center gap-2 mt-2">
+              {internship.status && <StatusBadge status={internship.status} />}
               {internship.mode && <ModeBadge mode={internship.mode} />}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={() => onViewImage(internship)}
-              className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-500 hover:text-blue-400"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-blue-600"
               title="View Image"
             >
-              <Eye className="w-5 h-5" />
+              <Eye className="w-4 h-4" />
             </button>
             <button
               onClick={() => onEdit(internship)}
-              className="p-2 hover:bg-yellow-500/20 rounded-lg transition-colors text-yellow-500 hover:text-yellow-400"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-yellow-600"
               title="Edit Internship"
             >
-              <Edit className="w-5 h-5" />
+              <Edit className="w-4 h-4" />
             </button>
             <button
               onClick={() => onDelete(internship._id, internship.role)}
-              className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-500 hover:text-red-400"
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-600 hover:text-red-600"
               title="Delete Internship"
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -741,9 +687,7 @@ const InternshipCard = ({
 
 export default function InternshipAdmin() {
   const [internships, setInternships] = useState<Internship[]>([]);
-  const [filteredInternships, setFilteredInternships] = useState<Internship[]>(
-    [],
-  );
+  const [filteredInternships, setFilteredInternships] = useState<Internship[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [modeFilter, setModeFilter] = useState<string>("all");
@@ -787,7 +731,6 @@ export default function InternshipAdmin() {
   useEffect(() => {
     let filtered = internships;
 
-    // Apply search
     if (searchTerm) {
       filtered = filtered.filter(
         (internship) =>
@@ -799,14 +742,12 @@ export default function InternshipAdmin() {
       );
     }
 
-    // Apply status filter
     if (statusFilter !== "all") {
       filtered = filtered.filter(
         (internship) => internship.status === statusFilter,
       );
     }
 
-    // Apply mode filter
     if (modeFilter !== "all") {
       filtered = filtered.filter(
         (internship) => internship.mode === modeFilter,
@@ -850,18 +791,11 @@ export default function InternshipAdmin() {
     setAlertConfig({
       isOpen: true,
       title: "Delete Internship",
-      message: `Are you sure you want to delete the "${role}" internship? This action cannot be undone.`,
+      message: `Are you sure you want to delete "${role}"?`,
       onConfirm: async () => {
         try {
           await API.delete(`/internships/${id}`);
           await fetchInternships();
-          setAlertConfig({
-            isOpen: true,
-            title: "Internship Deleted",
-            message: `Internship has been successfully deleted.`,
-            onConfirm: () =>
-              setAlertConfig((prev) => ({ ...prev, isOpen: false })),
-          });
         } catch (error) {
           console.error("Error deleting internship:", error);
         }
@@ -893,7 +827,7 @@ export default function InternshipAdmin() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-gray-950">
+    <div className="min-h-screen bg-gray-50">
       {/* Alert Dialog */}
       <AlertDialog
         isOpen={alertConfig.isOpen}
@@ -928,21 +862,16 @@ export default function InternshipAdmin() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
-        <div className="relative mb-8">
-          <div className="absolute -top-6 -left-6 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl"></div>
-
-          <div className="relative flex items-center gap-4">
-            <div className="p-4 bg-linear-to-br from-blue-500 to-yellow-500 rounded-2xl shadow-lg shadow-blue-500/20">
-              <Briefcase className="w-8 h-8 text-white" />
+        <div className="mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-600 rounded-lg">
+              <Briefcase className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold">
-                <span className="bg-linear-to-r from-blue-400 via-blue-500 to-yellow-500 bg-clip-text text-transparent">
-                  Internships & Experience
-                </span>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Internships & Experience
               </h1>
-              <p className="text-gray-400 text-lg mt-2">
+              <p className="text-gray-600 mt-1">
                 Manage your professional internships and work experience
               </p>
             </div>
@@ -950,71 +879,65 @@ export default function InternshipAdmin() {
         </div>
 
         {/* Controls Bar */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 mb-8 border border-gray-700">
+        <div className="bg-white rounded-lg border border-gray-200 p-4 mb-8">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             {/* Search */}
             <div className="relative w-full lg:w-96">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by company, role, or skills..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
 
             <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
               {/* Status Filter */}
-              <div className="relative flex-1 lg:flex-none min-w-35">
-                <select
-                  value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors appearance-none cursor-pointer"
-                >
-                  {uniqueStatuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status === "all" ? "All Status" : status}
-                    </option>
-                  ))}
-                </select>
-                <Clock className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
-              </div>
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              >
+                {uniqueStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status === "all" ? "All Status" : status}
+                  </option>
+                ))}
+              </select>
 
               {/* Mode Filter */}
-              <div className="relative flex-1 lg:flex-none min-w-35">
-                <select
-                  value={modeFilter}
-                  onChange={(e) => setModeFilter(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors appearance-none cursor-pointer"
-                >
-                  {uniqueModes.map((mode) => (
-                    <option key={mode} value={mode}>
-                      {mode === "all" ? "All Modes" : mode}
-                    </option>
-                  ))}
-                </select>
-                <MapPin className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
-              </div>
+              <select
+                value={modeFilter}
+                onChange={(e) => setModeFilter(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+              >
+                {uniqueModes.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {mode === "all" ? "All Modes" : mode}
+                  </option>
+                ))}
+              </select>
 
               {/* View Toggle */}
-              <div className="flex bg-gray-900 rounded-xl border border-gray-700 p-1">
+              <div className="flex border border-gray-300 rounded-lg overflow-hidden">
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-2 ${
                     viewMode === "list"
-                      ? "bg-blue-500 text-white"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   <List className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-2 ${
                     viewMode === "grid"
-                      ? "bg-blue-500 text-white"
-                      : "text-gray-400 hover:text-white"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-gray-600 hover:bg-gray-50"
                   }`}
                 >
                   <Grid className="w-5 h-5" />
@@ -1028,9 +951,9 @@ export default function InternshipAdmin() {
                   setSelectedInternship(null);
                   setIsFormModalOpen(true);
                 }}
-                className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-lg shadow-blue-500/20 flex items-center gap-2 whitespace-nowrap"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center gap-2"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4" />
                 <span className="hidden sm:inline">Add Internship</span>
               </button>
             </div>
@@ -1039,56 +962,54 @@ export default function InternshipAdmin() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700 hover:border-blue-500/50 transition-colors">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-500/20 rounded-lg">
-                <Briefcase className="w-5 h-5 text-blue-500" />
+              <div className="p-2 bg-blue-100 rounded">
+                <Briefcase className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">Total Internships</p>
-                <p className="text-2xl font-bold text-white">
-                  {internships.length}
-                </p>
+                <p className="text-gray-600 text-sm">Total Internships</p>
+                <p className="text-2xl font-bold text-gray-900">{internships.length}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700 hover:border-green-500/50 transition-colors">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-lg">
-                <CheckCircle className="w-5 h-5 text-green-500" />
+              <div className="p-2 bg-green-100 rounded">
+                <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">Active</p>
-                <p className="text-2xl font-bold text-green-400">
+                <p className="text-gray-600 text-sm">Active</p>
+                <p className="text-2xl font-bold text-gray-900">
                   {internships.filter((i) => i.status === "Active").length}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700 hover:border-purple-500/50 transition-colors">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <Wifi className="w-5 h-5 text-purple-500" />
+              <div className="p-2 bg-purple-100 rounded">
+                <Wifi className="w-5 h-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">Remote</p>
-                <p className="text-2xl font-bold text-purple-400">
+                <p className="text-gray-600 text-sm">Remote</p>
+                <p className="text-2xl font-bold text-gray-900">
                   {internships.filter((i) => i.mode === "Remote").length}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700 hover:border-yellow-500/50 transition-colors">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-500/20 rounded-lg">
-                <Clock className="w-5 h-5 text-yellow-500" />
+              <div className="p-2 bg-yellow-100 rounded">
+                <Clock className="w-5 h-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-gray-400 text-sm">Unique Skills</p>
-                <p className="text-2xl font-bold text-yellow-400">
+                <p className="text-gray-600 text-sm">Unique Skills</p>
+                <p className="text-2xl font-bold text-gray-900">
                   {new Set(internships.flatMap((i) => i.skills || [])).size}
                 </p>
               </div>
@@ -1099,26 +1020,23 @@ export default function InternshipAdmin() {
         {/* Internships List/Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="relative">
-              <div className="w-16 h-16 border-4 border-gray-700 border-t-blue-500 rounded-full animate-spin"></div>
-              <div className="w-16 h-16 border-4 border-gray-700 border-b-yellow-500 rounded-full animate-spin absolute top-0 left-0 opacity-50"></div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Briefcase className="w-6 h-6 text-gray-600" />
-              </div>
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+              <span className="text-gray-600">Loading internships...</span>
             </div>
           </div>
         ) : filteredInternships.length === 0 ? (
-          <div className="text-center py-20 bg-gray-800/30 rounded-2xl border border-gray-700">
-            <div className="w-24 h-24 bg-linear-to-br from-gray-700 to-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 border border-gray-600">
-              <Briefcase className="w-12 h-12 text-gray-600" />
+          <div className="text-center py-20 bg-white rounded-lg border border-gray-200">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Briefcase className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               No internships found
             </h3>
-            <p className="text-gray-400 mb-6">
+            <p className="text-gray-600 mb-6">
               {searchTerm || statusFilter !== "all" || modeFilter !== "all"
                 ? "Try adjusting your filters"
-                : "Add your first internship to showcase your experience"}
+                : "Add your first internship"}
             </p>
             {!searchTerm && statusFilter === "all" && modeFilter === "all" && (
               <button
@@ -1127,9 +1045,9 @@ export default function InternshipAdmin() {
                   setSelectedInternship(null);
                   setIsFormModalOpen(true);
                 }}
-                className="px-6 py-3 bg-linear-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium inline-flex items-center gap-2 shadow-lg shadow-blue-500/20"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium inline-flex items-center gap-2"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="w-4 h-4" />
                 Add Internship
               </button>
             )}
@@ -1138,9 +1056,9 @@ export default function InternshipAdmin() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredInternships.map((internship) => (
               <div key={internship._id} className="group">
-                <div className="bg-gray-800/50 rounded-xl border border-gray-700 overflow-hidden hover:border-blue-500/50 transition-all hover:shadow-xl hover:shadow-blue-500/5 h-full flex flex-col">
+                <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:border-blue-500 transition-all h-full flex flex-col">
                   <div 
-                    className="aspect-video bg-linear-to-br from-gray-800 to-gray-900 relative cursor-pointer"
+                    className="aspect-video bg-gray-100 relative cursor-pointer"
                     onClick={() => handleViewImage(internship)}
                   >
                     {internship.image ? (
@@ -1152,8 +1070,8 @@ export default function InternshipAdmin() {
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
                         <div className="text-center">
-                          <Building className="w-16 h-16 text-gray-700 mx-auto mb-2" />
-                          <p className="text-gray-600 text-sm">
+                          <Building className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                          <p className="text-gray-500 text-sm">
                             {internship.company}
                           </p>
                         </div>
@@ -1162,17 +1080,17 @@ export default function InternshipAdmin() {
 
                     {/* Hover overlay */}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Eye className="w-8 h-8 text-white" />
+                      <Eye className="w-6 h-6 text-white" />
                     </div>
                   </div>
 
-                  <div className="p-5 flex-1 flex flex-col">
-                    <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors mb-2">
+                  <div className="p-4 flex-1 flex flex-col">
+                    <h3 className="font-semibold text-gray-900 hover:text-blue-600 transition-colors mb-2">
                       {internship.role}
                     </h3>
 
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <div className="space-y-1 mb-3">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Building className="w-4 h-4 shrink-0" />
                         <span className="truncate">{internship.company}</span>
                       </div>
@@ -1186,9 +1104,7 @@ export default function InternshipAdmin() {
                     </div>
 
                     <div className="flex items-center gap-2 mb-3">
-                      {internship.status && (
-                        <StatusBadge status={internship.status} />
-                      )}
+                      {internship.status && <StatusBadge status={internship.status} />}
                       {internship.mode && <ModeBadge mode={internship.mode} />}
                     </div>
 
@@ -1197,13 +1113,13 @@ export default function InternshipAdmin() {
                         {internship.skills.slice(0, 3).map((skill) => (
                           <span
                             key={skill}
-                            className="px-2 py-1 bg-blue-500/10 text-blue-400 rounded text-xs"
+                            className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
                           >
                             {skill}
                           </span>
                         ))}
                         {internship.skills.length > 3 && (
-                          <span className="px-2 py-1 bg-gray-700 text-gray-400 rounded text-xs">
+                          <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
                             +{internship.skills.length - 3}
                           </span>
                         )}
@@ -1213,23 +1129,20 @@ export default function InternshipAdmin() {
                     <div className="flex gap-2 mt-auto">
                       <button
                         onClick={() => handleViewImage(internship)}
-                        className="flex-1 px-3 py-2 bg-blue-500/10 text-blue-500 rounded-lg hover:bg-blue-500/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm"
                       >
-                        <Eye className="w-4 h-4" />
                         View
                       </button>
                       <button
                         onClick={() => handleEditClick(internship)}
-                        className="flex-1 px-3 py-2 bg-yellow-500/10 text-yellow-500 rounded-lg hover:bg-yellow-500/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm"
                       >
-                        <Edit className="w-4 h-4" />
                         Edit
                       </button>
                       <button
                         onClick={() => confirmDelete(internship._id, internship.role)}
-                        className="flex-1 px-3 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm"
                       >
-                        <Trash2 className="w-4 h-4" />
                         Delete
                       </button>
                     </div>

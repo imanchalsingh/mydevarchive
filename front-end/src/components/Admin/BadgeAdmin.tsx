@@ -286,7 +286,6 @@ const BadgeModal = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Category
                 </label>
-                {/* /fetch categories from backend and map here real time no mock */}
                 <select
                   value={form.category}
                   onChange={(e) => setForm({ ...form, category: e.target.value })}

@@ -65,8 +65,8 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
-              <label 
-                htmlFor="email" 
+              <label
+                htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-1.5"
               >
                 Email address
@@ -88,8 +88,8 @@ export default function Login() {
 
             {/* Password */}
             <div>
-              <label 
-                htmlFor="password" 
+              <label
+                htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-1.5"
               >
                 Password
@@ -153,7 +153,7 @@ export default function Login() {
           {/* Demo credentials */}
           <div className="mt-6 pt-4 border-t border-gray-200">
             <p className="text-xs text-gray-500 text-center">
-              Demo credentials: admin@example.com / password
+              Not Admin? <span className="font-bold cursor-pointer underline text-red-600" onClick={() => navigate('/')}>Go Back</span>
             </p>
           </div>
         </div>

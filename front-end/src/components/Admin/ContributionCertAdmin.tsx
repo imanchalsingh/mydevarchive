@@ -11,13 +11,8 @@ import {
   AlertTriangle,
   Grid,
   List,
-  Calendar,
-  Users,
   Briefcase,
   Award,
-  MapPin,
-  Clock,
-  UserCircle,
   FileText,
   Eye,
   Download,
@@ -99,7 +94,6 @@ const ImageViewModal = ({
   contribution: ContributionCert | null;
 }) => {
   const imageRef = useRef<HTMLImageElement>(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
 
   const downloadImage = async () => {
     if (!contribution?.image) return;
@@ -164,7 +158,6 @@ const ImageViewModal = ({
               alt={title}
               className="max-w-full max-h-[60vh] object-contain rounded"
               crossOrigin="anonymous"
-              onLoad={() => setImageLoaded(true)}
             />
           ) : (
             <div className="w-48 h-48 bg-gray-100 rounded-lg flex items-center justify-center">

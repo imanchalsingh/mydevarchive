@@ -8,6 +8,7 @@ import badgeRoutes from "./routes/badgeRoutes.js";
 import internshipRoutes from "./routes/internshipRoutes.js";
 import contributionRoutes from "./routes/contributionRoutes.js";
 import contributionCertRoutes from "./routes/contributionCertRoute.js";
+import archiveRoutes from "./routes/archiveRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -23,7 +24,7 @@ app.use("/api/internships", internshipRoutes);
 app.use("/api/contributions", contributionRoutes);
 app.use("/api/contributions/cert", contributionCertRoutes);
 app.use("/api/users", userRoutes);
-
+app.use("/api/archive", archiveRoutes);
 app.get("/", (req, res) => {
   res.send("Dev Archive API Running");
 });

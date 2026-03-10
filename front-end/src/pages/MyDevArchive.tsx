@@ -3,7 +3,6 @@ import BadgeAdmin from "../components/Admin/BadgeAdmin";
 import CertificatesAdmin from "../components/Admin/CertificateAdmin";
 import ContributionAdmin from "../components/Admin/ContributionAdmin";
 import InternshipAdmin from "../components/Admin/InternshipAdmin";
-import ContributionCertAdmin from "../components/Admin/ContributionCertAdmin";
 import Dashboard from "../components/Admin/Dashboard";
 import { useNavigate } from "react-router-dom";
 import {
@@ -16,7 +15,6 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  BookOpen,
   NotebookIcon,
 } from "lucide-react";
 
@@ -46,12 +44,6 @@ const tabs = [
     label: "Internships",
     icon: Briefcase,
     component: InternshipAdmin,
-  },
-  {
-    id: "contribution-certs",
-    label: "Contribution Certs",
-    icon: BookOpen,
-    component: ContributionCertAdmin,
   },
 ];
 

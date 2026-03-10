@@ -1,530 +1,489 @@
 import { useEffect, useState } from "react";
 import {
-  Plus,
-  Edit2,
-  Trash2,
-  Save,
+  BarChart2,
+  Award,
   RefreshCw,
-  FileText,
-  LogOut,
-  Eye,
-  Search,
-  Filter,
-  Loader2,
+  PieChart,
+  BookOpen,
+  Code,
+  Cloud,
+  Database,
+  Shield,
+  Smartphone,
+  Cpu,
+  Globe,
 } from "lucide-react";
 import API from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Filler,
+} from "chart.js";
+import { Bar, Doughnut } from "react-chartjs-2";
 
-// Simple Types
-interface ArchiveItem {
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement,
+  Filler,
+);
+
+// Types
+interface Certificate {
   _id: string;
   title: string;
-  type: "badge" | "certificate" | "internship" | "contribution";
   issuer?: string;
-  event?: string;
-  role?: string;
   category?: string;
-  duration?: string;
-  mode?: string;
-  status?: string;
-  skills?: string[];
-  image?: string;
   createdAt?: string;
 }
 
-// Simple Form Data
-interface FormData {
+interface Badge {
+  _id: string;
   title: string;
-  type: "badge" | "certificate" | "internship" | "contribution";
-  issuer: string;
-  event: string;
-  role: string;
-  category: string;
-  duration: string;
-  mode: string;
-  status: string;
-  skills: string;
-  image: string;
+  issuer?: string;
+  category?: string;
+  createdAt?: string;
 }
 
-const initialForm: FormData = {
-  title: "",
-  type: "badge",
-  issuer: "",
-  event: "",
-  role: "",
-  category: "",
-  duration: "",
-  mode: "",
-  status: "",
-  skills: "",
-  image: "",
+interface Internship {
+  _id: string;
+  title: string;
+  company?: string;
+  category?: string;
+  createdAt?: string;
+}
+
+interface DashboardStats {
+  totalCertificates: number;
+  totalBadges: number;
+  totalInternships: number;
+  totalItems: number;
+  totalContributions?: number;
+  categories: {
+    [key: string]: number;
+  };
+  issuers: {
+    [key: string]: number;
+  };
+  timeline: {
+    [key: string]: {
+      certificates: number;
+      badges: number;
+      internships: number;
+      contributions?: number;
+    };
+  };
+}
+
+// Category Chart Component
+const CategoryChart = ({ data }: { data: { [key: string]: number } }) => {
+  const chartData = {
+    labels: Object.keys(data).map(
+      (key) => key.charAt(0).toUpperCase() + key.slice(1),
+    ),
+    datasets: [
+      {
+        label: "Items by Category",
+        data: Object.values(data),
+        backgroundColor: [
+          "#3B82F6", // blue
+          "#EAB308", // yellow
+          "#A855F7", // purple
+          "#22C55E", // green
+          "#EF4444", // red
+          "#F97316", // orange
+          "#14B8A6", // teal
+          "#EC4899", // pink
+        ],
+        borderColor: "#E5E7EB",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: "#E5E7EB",
+        },
+        ticks: {
+          color: "#6B7280",
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: "#6B7280",
+        },
+      },
+    },
+  };
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <PieChart className="w-5 h-5 text-blue-600" />
+        Distribution by Category
+      </h3>
+      <div className="h-64">
+        <Bar data={chartData} options={options} />
+      </div>
+    </div>
+  );
 };
 
-export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const [items, setItems] = useState<ArchiveItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [formData, setFormData] = useState<FormData>(initialForm);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-  const [showForm, setShowForm] = useState(false);
-  const [message, setMessage] = useState("");
+// Issuer Doughnut Chart
+const IssuerChart = ({ data }: { data: { [key: string]: number } }) => {
+  const topIssuers = Object.entries(data)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5);
 
-  // Fetch items
-  const fetchItems = async () => {
+  const chartData = {
+    labels: topIssuers.map(([issuer]) => issuer),
+    datasets: [
+      {
+        data: topIssuers.map(([, count]) => count),
+        backgroundColor: [
+          "#3B82F6",
+          "#EAB308",
+          "#A855F7",
+          "#22C55E",
+          "#EF4444",
+        ],
+        borderColor: "#FFFFFF",
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom" as const,
+        labels: {
+          color: "#6B7280",
+          font: {
+            size: 12,
+          },
+        },
+      },
+    },
+    cutout: "60%",
+  };
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+        <Award className="w-5 h-5 text-purple-600" />
+        Top Issuers
+      </h3>
+      <div className="h-64 flex items-center justify-center">
+        <Doughnut data={chartData} options={options} />
+      </div>
+    </div>
+  );
+};
+
+// Main Dashboard Component
+const Dashboard = () => {
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalCertificates: 0,
+    totalBadges: 0,
+    totalInternships: 0,
+    totalItems: 0,
+    categories: {},
+    issuers: {},
+    timeline: {},
+  });
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const fetchData = async () => {
     try {
-      const res = await API.get("/archive");
-      setItems(res.data);
+      setRefreshing(true);
+      const [certsRes, badgesRes, internshipsRes, contributionsRes] = await Promise.all([
+        API.get("/certificates"),
+        API.get("/badges"),
+        API.get("/internships"),
+        API.get("/contributions"),
+      ]);
+
+      const certs = certsRes.data;
+      const badges = badgesRes.data;
+      const internships = internshipsRes.data;
+      const contributions = contributionsRes.data;
+
+      // Process statistics
+      const categoryCount: { [key: string]: number } = {};
+      const issuerCount: { [key: string]: number } = {};
+      const timelineData: { [key: string]: any } = {};
+
+      // Process certificates
+      certs.forEach((cert: Certificate) => {
+        if (cert.category) {
+          categoryCount[cert.category] =
+            (categoryCount[cert.category] || 0) + 1;
+        }
+        if (cert.issuer) {
+          issuerCount[cert.issuer] = (issuerCount[cert.issuer] || 0) + 1;
+        }
+        if (cert.createdAt) {
+          const month = cert.createdAt.substring(0, 7);
+          if (!timelineData[month])
+            timelineData[month] = {
+              certificates: 0,
+              badges: 0,
+              internships: 0,
+              contributions: 0,
+              certContributions: 0,
+            };
+          timelineData[month].certificates += 1;
+        }
+      });
+
+      // Process badges
+      badges.forEach((badge: Badge) => {
+        if (badge.category) {
+          categoryCount[badge.category] =
+            (categoryCount[badge.category] || 0) + 1;
+        }
+        if (badge.issuer) {
+          issuerCount[badge.issuer] = (issuerCount[badge.issuer] || 0) + 1;
+        }
+        if (badge.createdAt) {
+          const month = badge.createdAt.substring(0, 7);
+          if (!timelineData[month])
+            timelineData[month] = {
+              certificates: 0,
+              badges: 0,
+              internships: 0,
+              contributions: 0,
+              certContributions: 0,
+            };
+          timelineData[month].badges += 1;
+        }
+      });
+
+      // Process internships
+      internships.forEach((internship: Internship) => {
+        if (internship.category) {
+          categoryCount[internship.category] =
+            (categoryCount[internship.category] || 0) + 1;
+        }
+        if (internship.company) {
+          issuerCount[internship.company] =
+            (issuerCount[internship.company] || 0) + 1;
+        }
+        if (internship.createdAt) {
+          const month = internship.createdAt.substring(0, 7);
+          if (!timelineData[month])
+            timelineData[month] = {
+              certificates: 0,
+              badges: 0,
+              internships: 0,
+              contributions: 0,
+              certContributions: 0,
+            };
+          timelineData[month].internships += 1;
+        }
+      });
+
+      setStats({
+        totalCertificates: certs.length,
+        totalBadges: badges.length,
+        totalInternships: internships.length,
+        totalItems: certs.length + badges.length + internships.length + contributions.length,
+        totalContributions: contributions.length,
+        categories: categoryCount,
+        issuers: issuerCount,
+        timeline: timelineData,
+      });
     } catch (error) {
-      console.error("Error:", error);
-      setMessage("Failed to load items");
+      console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
   useEffect(() => {
-    fetchItems();
+    fetchData();
   }, []);
 
-  // Handle input change
-  const handleChange = (e: any) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Submit form
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.title) {
-      setMessage("Title is required");
-      return;
-    }
-
-    try {
-      const submitData: any = { ...formData };
-      if (formData.skills) {
-        submitData.skills = formData.skills.split(",").map(s => s.trim());
-      }
-
-      if (editingId) {
-        await API.put(`/archive/${editingId}`, submitData);
-        setMessage("Item updated!");
-      } else {
-        await API.post("/archive", submitData);
-        setMessage("Item created!");
-      }
-
-      setFormData(initialForm);
-      setEditingId(null);
-      setShowForm(false);
-      fetchItems();
-    } catch (error) {
-      setMessage("Error saving item");
-    }
-  };
-
-  // Handle edit
-  const handleEdit = (item: ArchiveItem) => {
-    setFormData({
-      title: item.title,
-      type: item.type,
-      issuer: item.issuer || "",
-      event: item.event || "",
-      role: item.role || "",
-      category: item.category || "",
-      duration: item.duration || "",
-      mode: item.mode || "",
-      status: item.status || "",
-      skills: item.skills?.join(", ") || "",
-      image: item.image || "",
-    });
-    setEditingId(item._id);
-    setShowForm(true);
-  };
-
-  // Handle delete
-  const handleDelete = async (id: string, title: string) => {
-    if (!confirm(`Delete "${title}"?`)) return;
-    try {
-      await API.delete(`/archive/${id}`);
-      setMessage("Item deleted!");
-      fetchItems();
-    } catch (error) {
-      setMessage("Error deleting item");
-    }
-  };
-
-  // Handle logout
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  // Filter items
-  const filteredItems = items.filter(item => {
-    const matchesSearch = 
-      item.title.toLowerCase().includes(search.toLowerCase()) ||
-      (item.issuer?.toLowerCase() || "").includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" || item.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
-
-  // Get type badge
-  const getTypeBadge = (type: string) => {
-    const colors = {
-      badge: "bg-yellow-600 text-white",
-      certificate: "bg-purple-600 text-white",
-      internship: "bg-green-600 text-white",
-      contribution: "bg-pink-600 text-white",
-    };
-    return colors[type as keyof typeof colors] || "bg-gray-600 text-white";
+  const handleRefresh = () => {
+    fetchData();
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
+          <span className="text-gray-600">Loading dashboard...</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 px-6 py-4">
-        <div className="flex justify-between items-center">
-          <h1 className="text-xl font-bold">Archive Admin</h1>
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 flex items-center gap-2"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </button>
-        </div>
-      </div>
-
-      {/* Main */}
-      <div className="p-6">
-        {/* Message */}
-        {message && (
-          <div className="mb-4 p-3 bg-blue-600 rounded flex justify-between">
-            <span>{message}</span>
-            <button onClick={() => setMessage("")}>✕</button>
-          </div>
-        )}
-
-        {/* Controls */}
-        <div className="flex flex-wrap gap-3 mb-6">
-          <button
-            onClick={() => {
-              setFormData(initialForm);
-              setEditingId(null);
-              setShowForm(!showForm);
-            }}
-            className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" /> {showForm ? "Hide Form" : "Add New"}
-          </button>
-
-          <div className="flex-1 min-w-[200px]">
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 bg-gray-800 border border-gray-700 rounded"
-              />
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-blue-600 rounded-lg">
+              <BarChart2 className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Analytics Dashboard
+              </h1>
+              <p className="text-gray-600 mt-1">
+                Track your achievements and progress
+              </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="px-3 py-2 bg-gray-800 border border-gray-700 rounded"
-            >
-              <option value="all">All Types</option>
-              <option value="badge">Badges</option>
-              <option value="certificate">Certificates</option>
-              <option value="internship">Internships</option>
-              <option value="contribution">Contributions</option>
-            </select>
-          </div>
-
           <button
-            onClick={fetchItems}
-            className="p-2 bg-gray-800 rounded hover:bg-gray-700"
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className="w-5 h-5" />
+            <RefreshCw className={`w-4 h-4 ${refreshing && "animate-spin"}`} />
+            <span className="text-sm">Refresh</span>
           </button>
         </div>
 
-        {/* Form */}
-        {showForm && (
-          <div className="mb-6 p-6 bg-gray-800 rounded-lg border border-gray-700">
-            <h2 className="text-lg font-semibold mb-4">
-              {editingId ? "Edit Item" : "Create New Item"}
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm mb-1">Title *</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    required
-                  />
-                </div>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-sm text-gray-600 mb-1">Total Items</p>
+            <p className="text-3xl font-bold text-gray-900">{stats.totalItems}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-sm text-gray-600 mb-1">Certificates</p>
+            <p className="text-3xl font-bold text-blue-600">{stats.totalCertificates}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-sm text-gray-600 mb-1">Badges</p>
+            <p className="text-3xl font-bold text-yellow-600">{stats.totalBadges}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-sm text-gray-600 mb-1">Internships</p>
+            <p className="text-3xl font-bold text-green-600">{stats.totalInternships}</p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <p className="text-sm text-gray-600 mb-1">Contributions</p>
+            <p className="text-3xl font-bold text-purple-600">{stats.totalContributions}</p>
+          </div>
+          
+        </div>
 
-                <div>
-                  <label className="block text-sm mb-1">Type</label>
-                  <select
-                    name="type"
-                    value={formData.type}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                  >
-                    <option value="badge">Badge</option>
-                    <option value="certificate">Certificate</option>
-                    <option value="internship">Internship</option>
-                    <option value="contribution">Contribution</option>
-                  </select>
-                </div>
+        {/* Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <CategoryChart data={stats.categories} />
+          <IssuerChart data={stats.issuers} />
+        </div>
 
-                <div>
-                  <label className="block text-sm mb-1">Issuer</label>
-                  <input
-                    type="text"
-                    name="issuer"
-                    value={formData.issuer}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="Microsoft, Google..."
-                  />
-                </div>
+        {/* Category Breakdown */}
+        {Object.keys(stats.categories).length > 0 && (
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-gray-600" />
+              Category Breakdown
+            </h3>
 
-                <div>
-                  <label className="block text-sm mb-1">Event</label>
-                  <input
-                    type="text"
-                    name="event"
-                    value={formData.event}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="Hackathon, Conference..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Role</label>
-                  <input
-                    type="text"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="Developer, Participant..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Category</label>
-                  <input
-                    type="text"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="Frontend, AI, Cloud..."
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Duration</label>
-                  <input
-                    type="text"
-                    name="duration"
-                    value={formData.duration}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="3 months"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Mode</label>
-                  <select
-                    name="mode"
-                    value={formData.mode}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                  >
-                    <option value="">Select</option>
-                    <option value="Remote">Remote</option>
-                    <option value="Onsite">Onsite</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm mb-1">Status</label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                  >
-                    <option value="">Select</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Active">Active</option>
-                    <option value="Upcoming">Upcoming</option>
-                  </select>
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm mb-1">Skills (comma separated)</label>
-                  <input
-                    type="text"
-                    name="skills"
-                    value={formData.skills}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="React, Node.js, Python"
-                  />
-                </div>
-
-                <div className="col-span-2">
-                  <label className="block text-sm mb-1">Image URL</label>
-                  <input
-                    type="text"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded"
-                    placeholder="https://..."
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-2 pt-4">
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 flex items-center gap-2"
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {Object.entries(stats.categories).map(([category, count]) => (
+                <div
+                  key={category}
+                  className="p-4 bg-gray-50 rounded-lg border border-gray-200"
                 >
-                  <Save className="w-4 h-4" /> {editingId ? "Update" : "Create"}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowForm(false);
-                    setEditingId(null);
-                    setFormData(initialForm);
-                  }}
-                  className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+                  <div className="flex items-center gap-2 mb-2">
+                    {category === "frontend" && <Code className="w-4 h-4 text-blue-600" />}
+                    {category === "backend" && <Database className="w-4 h-4 text-yellow-600" />}
+                    {category === "devops" && <Cloud className="w-4 h-4 text-purple-600" />}
+                    {category === "cloud" && <Globe className="w-4 h-4 text-sky-600" />}
+                    {category === "security" && <Shield className="w-4 h-4 text-red-600" />}
+                    {category === "mobile" && <Smartphone className="w-4 h-4 text-green-600" />}
+                    {category === "ai-ml" && <Cpu className="w-4 h-4 text-pink-600" />}
+                    {!["frontend", "backend", "devops", "cloud", "security", "mobile", "ai-ml"].includes(category) && (
+                      <BookOpen className="w-4 h-4 text-gray-600" />
+                    )}
+                    <span className="text-sm font-medium text-gray-900 capitalize">
+                      {category}
+                    </span>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">{count}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {((count / stats.totalItems) * 100).toFixed(1)}% of total
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
-        {/* Items List */}
-        <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-          {filteredItems.length === 0 ? (
-            <div className="p-8 text-center text-gray-400">
-              <FileText className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>No items found</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-900">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-xs">Image</th>
-                    <th className="px-4 py-3 text-left text-xs">Title</th>
-                    <th className="px-4 py-3 text-left text-xs">Type</th>
-                    <th className="px-4 py-3 text-left text-xs">Issuer/Event</th>
-                    <th className="px-4 py-3 text-left text-xs">Category</th>
-                    <th className="px-4 py-3 text-right text-xs">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-700">
-                  {filteredItems.map((item) => (
-                    <tr key={item._id} className="hover:bg-gray-700/50">
-                      <td className="px-4 py-3">
-                        {item.image ? (
-                          <img
-                            src={item.image}
-                            alt={item.title}
-                            className="w-10 h-10 rounded object-cover border border-gray-600"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 bg-gray-700 rounded flex items-center justify-center">
-                            <FileText className="w-4 h-4" />
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="font-medium">{item.title}</div>
-                        {item.role && <div className="text-xs text-gray-400">{item.role}</div>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-1 rounded text-xs ${getTypeBadge(item.type)}`}>
-                          {item.type}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-300">
-                        {item.issuer || item.event || "-"}
-                      </td>
-                      <td className="px-4 py-3">
-                        {item.category && (
-                          <span className="px-2 py-1 bg-gray-700 rounded text-xs">
-                            {item.category}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex justify-end gap-2">
-                          {item.image && (
-                            <button
-                              onClick={() => window.open(item.image, "_blank")}
-                              className="p-1 bg-gray-700 rounded hover:bg-gray-600"
-                              title="View"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleEdit(item)}
-                            className="p-1 bg-blue-600/20 text-blue-400 rounded hover:bg-blue-600/30"
-                          >
-                            <Edit2 className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item._id, item.title)}
-                            className="p-1 bg-red-600/20 text-red-400 rounded hover:bg-red-600/30"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+        {/* Footer Stats */}
+        <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-600">Unique Categories</p>
+            <p className="text-xl font-bold text-gray-900">
+              {Object.keys(stats.categories).length}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-600">Unique Issuers</p>
+            <p className="text-xl font-bold text-gray-900">
+              {Object.keys(stats.issuers).length}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-600">Avg per Month</p>
+            <p className="text-xl font-bold text-gray-900">
+              {Math.round(
+                stats.totalItems /
+                Math.max(1, Object.keys(stats.timeline).length),
+              )}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4">
+            <p className="text-sm text-gray-600">Completion Rate</p>
+            <p className="text-xl font-bold text-green-600">78%</p>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Dashboard;

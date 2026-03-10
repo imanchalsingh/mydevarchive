@@ -744,7 +744,7 @@ export default function UserDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           <div className="bg-white rounded-lg p-3 border border-gray-200">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-blue-100 rounded">
@@ -802,15 +802,6 @@ export default function UserDashboard() {
                 <p className="text-gray-600 text-xs">Contrib</p>
                 <p className="text-lg font-semibold text-gray-900">{contributions.length}</p>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg p-3 border border-gray-200">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-indigo-100 rounded">
-                <FileText className="w-4 h-4 text-indigo-600" />
-              </div>
-
             </div>
           </div>
         </div>

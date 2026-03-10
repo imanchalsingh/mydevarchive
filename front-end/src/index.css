@@ -1,4 +1,4 @@
 @import "tailwindcss";
-*{
-    font-family: 'Kanit';
+* {
+  font-family: "Kanit" !important;
 }
